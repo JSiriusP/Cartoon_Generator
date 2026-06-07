@@ -63,6 +63,8 @@ Pixel **padding(Pixel **input, int height, int width, int radio)
         int row = f + radio;
         memcpy(&output[row][radio], input[f], width * sizeof(Pixel));
     }
+    
+    return output;
 }
 
 Pixel **initAuxMatriz(int height, int width)
@@ -103,13 +105,21 @@ Pixel **initMainMatriz(Pixel *pixelCast, int height, int width) {
 
 Pixel **blurMatriz(Pixel **input, int width, int height, int radio)
 {
-    Pixel **output = initAuxMatriz(height, width);
+    int newHeight = height + (2 * radio);
+    int newWidth = width + (2 * radio);
+    Pixel **output = initAuxMatriz(newHeight, newWidth);
     int r = 0, g = 0, b = 0;
     int cantPixel = (2 * radio + 1) * (2 * radio + 1);
 
-    for (int i = radio; i < (width - radio); i++)
+    for (int i = 0; i < newHeight; i++) {
+        for (int j = 0; j < newWidth; j++) {
+            output[i][j].r = 0; output[i][j].g = 0; output[i][j].b = 0;
+        }
+    }
+
+    for (int i = radio; i < (height + radio); i++)
     {
-        for (int j = radio; j < (height - radio); j++)
+        for (int j = radio; j < (width + radio); j++)
         {
 
             int r = 0, g = 0, b = 0;
@@ -149,16 +159,24 @@ Pixel **blurMatriz(Pixel **input, int width, int height, int radio)
  */
 Pixel** highlightedMatriz(Pixel **input, int width, int height, int radio)
 {
-    Pixel **output = initAuxMatriz(height, width);
+    int newHeight = height + (2 * radio);
+    int newWidth = width + (2 * radio);
+    Pixel **output = initAuxMatriz(newHeight, newWidth);
     int r = 0, g = 0, b = 0;
     int cantPixel = (2 * radio + 1) * (2 * radio + 1);
     float gx, gy;
     float magnitude;
     int umbralizeValue;
 
-    for (int i = radio; i < (width - radio); i++)
+    for (int i = 0; i < newHeight; i++) {
+        for (int j = 0; j < newWidth; j++) {
+            output[i][j].r = 0; output[i][j].g = 0; output[i][j].b = 0;
+        }
+    }
+
+    for (int i = radio; i < (height + radio); i++)
     {
-        for (int j = radio; j < (height - radio); j++)
+        for (int j = radio; j < (width + radio); j++)
         {
             gx = 0;
             gy = 0;
@@ -210,9 +228,9 @@ void posterize(Pixel **input, int width, int height, int channels)
     int r = 0, g = 0, b = 0;
     int step = 256 / POSTURIZERANGES; // tamaño de cada intervalito
 
-    for (int i = 0; i < width; i++)
+    for (int i = 0; i < height; i++)
     {
-        for (int j = 0; j < height; j++)
+        for (int j = 0; j < width; j++)
         {
             if (channels == 1)
             {
@@ -238,6 +256,16 @@ void posterize(Pixel **input, int width, int height, int channels)
                 input[i][j].g = (unsigned char) gposter;
                 input[i][j].b = (unsigned char) bposter;
                 
+            }
+            else 
+            {
+                int rposter = (input[i][j].r / step) * step;
+                int gposter = (input[i][j].g / step) * step;
+                int bposter = (input[i][j].b / step) * step;
+
+                input[i][j].r = (unsigned char) rposter;
+                input[i][j].g = (unsigned char) gposter;
+                input[i][j].b = (unsigned char) bposter;
             }
         }
     }
@@ -265,7 +293,7 @@ void main(int argc, char **argv)
     int radio = atoi(argv[2]);
     int width, height, channels;
 
-    printf("0");
+    printf("0\n");
     unsigned char *data = stbi_load(path, &width, &height, &channels, 3);
 
     if (data == NULL)
@@ -277,20 +305,20 @@ void main(int argc, char **argv)
         // cast de puntero data a pixel
         Pixel *pixelCast = (Pixel *)data;
         
-        printf("1");
+        printf("1\n");
         Pixel **matriz = initMainMatriz(pixelCast, height, width);
 
-        printf("2");
+        printf("2\n");
         Pixel **paddingMatriz = padding(matriz, height, width, radio);
 
-        printf("3");
-        paddingMatriz = blurMatriz(paddingMatriz, width, height, radio);
-        printf("4");
-        paddingMatriz = highlightedMatriz(paddingMatriz, width, height, radio);
-        printf("5");
+        printf("3\n");
+        Pixel **blurOutput = blurMatriz(paddingMatriz, width, height, radio);
+        printf("4\n");
+        Pixel **highlightOutput = highlightedMatriz(blurOutput, width, height, radio);
+        printf("5\n");
         posterize(matriz, width, height, channels);
-        printf("6");
-        sum(matriz, paddingMatriz, height, width, radio);
+        printf("6\n");
+        sum(matriz, highlightOutput, height, width, radio);
 
         int bytePerFile = width * 3;
         int result = stbi_write_png("resultado_cartoon.png", width, height, 3, matriz[0], bytePerFile);
@@ -305,7 +333,16 @@ void main(int argc, char **argv)
         }
 
         free(matriz);
+        free(paddingMatriz[0]);
         free(paddingMatriz);
+        
+        for (int i = 0; i < height + 2 * radio; i++) {
+            free(blurOutput[i]);
+            free(highlightOutput[i]);
+        }
+        free(blurOutput);
+        free(highlightOutput);
+
         stbi_image_free(data);
     }
 }
