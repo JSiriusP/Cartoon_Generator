@@ -2,16 +2,16 @@
 #include <string.h>
 #include <stdio.h>
 #include <malloc.h>
-#define STB_IMAGE_IMPLEMENTATION
+#include <sys/time.h>
 #include "stb_image.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 
 #define SATURATE(v) ((v) > 255 ? 255 : ((v) < 0 ? 0 : (v)))
 #define POSTURIZERANGES 12
 
-typedef struct
-{
+typedef struct{
     unsigned char r;
     unsigned char g;
     unsigned char b;
@@ -21,11 +21,13 @@ typedef struct
 const int SOBEL_3X3_X[3][3] = {
     {-1, 0, 1},
     {-2, 0, 2},
-    {-1, 0, 1}};
+    {-1, 0, 1}
+};
 const int SOBEL_3X3_Y[3][3] = {
     {-1, -2, -1},
     {0, 0, 0},
-    {1, 2, 1}};
+    {1, 2, 1}
+};
 
 // Sobel 5x5 (Valores estándar de gradiente extendido)
 const int SOBEL_5X5_X[5][5] = {
@@ -33,17 +35,18 @@ const int SOBEL_5X5_X[5][5] = {
     {-2, -3, 0, 3, 2},
     {-3, -5, 0, 5, 3},
     {-2, -3, 0, 3, 2},
-    {-1, -2, 0, 2, 1}};
+    {-1, -2, 0, 2, 1}
+};
 
 const int SOBEL_5X5_Y[5][5] = {
     {-1, -2, -3, -2, -1},
     {-2, -3, -5, -3, -2},
     {0, 0, 0, 0, 0},
     {2, 3, 5, 3, 2},
-    {1, 2, 3, 2, 1}};
+    {1, 2, 3, 2, 1}
+};
 
-Pixel **padding(Pixel **input, int height, int width, int radio)
-{
+Pixel **padding(Pixel **input, int height, int width, int radio){
 
     int newHeight = height + (2 * radio);
     int newWidth = width + (2 * radio);
@@ -63,12 +66,10 @@ Pixel **padding(Pixel **input, int height, int width, int radio)
         int row = f + radio;
         memcpy(&output[row][radio], input[f], width * sizeof(Pixel));
     }
-    
-    return output;
+   return output;
 }
 
-Pixel **initAuxMatriz(int height, int width)
-{
+Pixel **initAuxMatriz(int height, int width){
     Pixel **aux = (Pixel **)malloc(height * sizeof(Pixel *));
     for (int i = 0; i < height; i++)
     {
@@ -103,8 +104,7 @@ Pixel **initMainMatriz(Pixel *pixelCast, int height, int width) {
     }
 }
 
-Pixel **blurMatriz(Pixel **input, int width, int height, int radio)
-{
+Pixel **blurMatriz(Pixel **input, int width, int height, int radio){
     int newHeight = height + (2 * radio);
     int newWidth = width + (2 * radio);
     Pixel **output = initAuxMatriz(newHeight, newWidth);
@@ -121,8 +121,7 @@ Pixel **blurMatriz(Pixel **input, int width, int height, int radio)
     {
         for (int j = radio; j < (width + radio); j++)
         {
-
-            int r = 0, g = 0, b = 0;
+            r = 0, g = 0, b = 0;
             for (int f = i - radio; f <= i + radio; f++)
             {
                 for (int c = j - radio; c <= j + radio; c++)
@@ -157,8 +156,7 @@ Pixel **blurMatriz(Pixel **input, int width, int height, int radio)
  *
  * @return A newly allocated image containing the detected edges.
  */
-Pixel** highlightedMatriz(Pixel **input, int width, int height, int radio)
-{
+Pixel** highlightedMatriz(Pixel **input, int width, int height, int radio){
     int newHeight = height + (2 * radio);
     int newWidth = width + (2 * radio);
     Pixel **output = initAuxMatriz(newHeight, newWidth);
@@ -223,9 +221,7 @@ Pixel** highlightedMatriz(Pixel **input, int width, int height, int radio)
 * @param height   Image height in pixels.
 * @param channels Number of channels (1 = grayscale, 3 = RGB). 
 */
-void posterize(Pixel **input, int width, int height, int channels)
-{
-    int r = 0, g = 0, b = 0;
+void posterize(Pixel **input, int width, int height, int channels){
     int step = 256 / POSTURIZERANGES; // tamaño de cada intervalito
 
     for (int i = 0; i < height; i++)
@@ -271,15 +267,11 @@ void posterize(Pixel **input, int width, int height, int channels)
     }
 }
 
-void sum(Pixel **originalMatriz, Pixel **paddingMatriz, int height, int width, int radio)
-{
+void sum(Pixel **originalMatriz, Pixel **paddingMatriz, int height, int width, int radio){
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
         {
-
-            Pixel originialPixel = originalMatriz[i][j];
-            Pixel paddingPixel = paddingMatriz[i + radio][j + radio];
             originalMatriz[i][j].r = (unsigned char)SATURATE(originalMatriz[i][j].r + paddingMatriz[i + radio][j + radio].r);
             originalMatriz[i][j].g = (unsigned char)SATURATE(originalMatriz[i][j].g + paddingMatriz[i + radio][j + radio].g);
             originalMatriz[i][j].b = (unsigned char)SATURATE(originalMatriz[i][j].b + paddingMatriz[i + radio][j + radio].b);
@@ -287,10 +279,14 @@ void sum(Pixel **originalMatriz, Pixel **paddingMatriz, int height, int width, i
     }
 }
 
-void main(int argc, char **argv)
-{
+void main(int argc, char **argv){
+    if (argc < 4) {
+        printf("Uso: %s <imagen> <radio> <nombre_salida>\n", argv[0]);
+        exit(1);
+    }
     char *path = argv[1];
     int radio = atoi(argv[2]);
+    char *out_name = argv[3];
     int width, height, channels;
 
     printf("0\n");
@@ -305,23 +301,30 @@ void main(int argc, char **argv)
         // cast de puntero data a pixel
         Pixel *pixelCast = (Pixel *)data;
         
-        printf("1\n");
+        struct timeval start, end;
+        gettimeofday(&start, NULL);
+
         Pixel **matriz = initMainMatriz(pixelCast, height, width);
 
-        printf("2\n");
         Pixel **paddingMatriz = padding(matriz, height, width, radio);
 
-        printf("3\n");
         Pixel **blurOutput = blurMatriz(paddingMatriz, width, height, radio);
-        printf("4\n");
+        
         Pixel **highlightOutput = highlightedMatriz(blurOutput, width, height, radio);
-        printf("5\n");
+
         posterize(matriz, width, height, channels);
-        printf("6\n");
+        
         sum(matriz, highlightOutput, height, width, radio);
 
         int bytePerFile = width * 3;
-        int result = stbi_write_png("resultado_cartoon.png", width, height, 3, matriz[0], bytePerFile);
+        
+        char out_path[256];
+        snprintf(out_path, sizeof(out_path), "files/%s%s", out_name, strstr(out_name, ".png") ? "" : ".png");
+        
+        int result = stbi_write_png(out_path, width, height, 3, matriz[0], bytePerFile);
+
+        gettimeofday(&end, NULL);
+        double time_taken = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1e6;
 
         if (result == 0)
         {
@@ -329,7 +332,7 @@ void main(int argc, char **argv)
         }
         else
         {
-            printf("¡Imagen de tipo Cartoon generada con éxito!\n");
+            printf("¡Imagen de tipo Cartoon generada con éxito en %f segundos!\n", time_taken);
         }
 
         free(matriz);
