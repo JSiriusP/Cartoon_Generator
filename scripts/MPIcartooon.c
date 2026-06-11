@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <malloc.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "includes/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+#include "includes/stb_image_write.h"
 
 #define SATURATE(v) ((v) > 255 ? 255 : ((v) < 0 ? 0 : (v)))
 #define POSTURIZERANGES 12
@@ -68,9 +68,18 @@ Pixel **padding(Pixel **input, int height, int width, int radio){
 
 Pixel **initAuxMatriz(int height, int width){
     Pixel **aux = (Pixel **)malloc(height * sizeof(Pixel *));
-    for (int i = 0; i < height; i++) {
-        aux[i] = (Pixel *)malloc(width * sizeof(Pixel));
+    if (aux == NULL) return NULL;
+
+    Pixel *pool = (Pixel *)malloc(height * width * sizeof(Pixel));
+    if (pool == NULL) {
+        free(aux);
+        return NULL;
     }
+
+    for (int i = 0; i < height; i++) {
+        aux[i] = &pool[i * width];
+    }
+
     return aux;
 }
 
@@ -266,15 +275,15 @@ int main(int argc, char **argv){
             int validEnd = end + 2 * radio - 1;
             if (validEnd >= height) validEnd = height - 1;
             
-            int Hrecv = validEnd - validStart + 1;
+            int hRecv = validEnd - validStart + 1;
             int targetOffset = start - validStart;
             int numberOfTargetRows = end - start;
             
             int destRank = i + 1;
             
-            int info[3] = {Hrecv, targetOffset, numberOfTargetRows};
+            int info[3] = {hRecv, targetOffset, numberOfTargetRows};
             MPI_Send(info, 3, MPI_INT, destRank, 0, MPI_COMM_WORLD);
-            MPI_Send(&pixelCast[validStart * width], Hrecv * width * sizeof(Pixel), MPI_BYTE, destRank, 1, MPI_COMM_WORLD);
+            MPI_Send(&pixelCast[validStart * width], hRecv * width * sizeof(Pixel), MPI_BYTE, destRank, 1, MPI_COMM_WORLD);
             
             currentRow = end;
         }
@@ -341,7 +350,7 @@ int main(int argc, char **argv){
         if (result == 0) {
             printf("Error al guardar la imagen final.\n");
         } else {
-            printf("¡Imagen generada con éxito con MPI en %f segundos!\n Se utilizaron %d threads en esta ejecución %d\n", end_time - start_time, size);
+            printf("¡Imagen generada con éxito con MPI en %f segundos!\nSe utilizaron %d threads en esta ejecución\n", end_time - start_time, size);
         }
 
         free(matriz);
@@ -361,10 +370,10 @@ int main(int argc, char **argv){
         Pixel *localData = (Pixel *)malloc(hRecv * width * sizeof(Pixel));
         MPI_Recv(localData, hRecv * width * sizeof(Pixel), MPI_BYTE, 0, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         
-        Pixel **matriz = initMainMatriz(localData, Hrecv, width);
-        Pixel **paddingMatriz = padding(matriz, Hrecv, width, radio);
-        Pixel **blurOutput = blurMatriz(paddingMatriz, width, Hrecv, radio);
-        Pixel **highlightOutput = highlightedMatriz(blurOutput, width, Hrecv, radio);
+        Pixel **matriz = initMainMatriz(localData, hRecv, width);
+        Pixel **paddingMatriz = padding(matriz, hRecv, width, radio);
+        Pixel **blurOutput = blurMatriz(paddingMatriz, width, hRecv, radio);
+        Pixel **highlightOutput = highlightedMatriz(blurOutput, width, hRecv, radio);
         
         Pixel *send_buf = (Pixel *)malloc(numberOfTargetRows * width * sizeof(Pixel));
         for (int r = 0; r < numberOfTargetRows; r++) {
@@ -377,11 +386,10 @@ int main(int argc, char **argv){
         free(matriz);
         free(paddingMatriz[0]); 
         free(paddingMatriz);
-        for (int i = 0; i < Hrecv + 2 * radio; i++) {
-            free(blurOutput[i]); 
-            free(highlightOutput[i]);
-        }
-        free(blurOutput); 
+        free(blurOutput[0]); 
+        free(blurOutput);    
+
+        free(highlightOutput[0]);
         free(highlightOutput);
         free(localData);
     } else {

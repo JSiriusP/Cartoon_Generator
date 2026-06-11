@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include <malloc.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "includes/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+#include "includes/stb_image_write.h"
 #include <omp.h>
 
 #define SATURATE(v) ((v) > 255 ? 255 : ((v) < 0 ? 0 : (v)))
@@ -69,12 +69,20 @@ Pixel **padding(Pixel **input, int height, int width, int radio){
    return output;
 }
 
-Pixel **initAuxMatriz(int height, int width){
+Pixel **initAuxMatriz(int height, int width) {
     Pixel **aux = (Pixel **)malloc(height * sizeof(Pixel *));
-    for (int i = 0; i < height; i++)
-    {
-        aux[i] = (Pixel *)malloc(width * sizeof(Pixel));
+    if (aux == NULL) return NULL;
+
+    Pixel *pool = (Pixel *)malloc(height * width * sizeof(Pixel));
+    if (pool == NULL) {
+        free(aux);
+        return NULL;
     }
+
+    for (int i = 0; i < height; i++) {
+        aux[i] = &pool[i * width];
+    }
+
     return aux;
 }
 
@@ -119,7 +127,7 @@ Pixel **blurMatriz(Pixel **input, int width, int height, int radio)
     }
     //barrier implicito
 
-    #pragma omp parallel for schedule (guided)
+    #pragma omp parallel for collapse(2) schedule(guided)
     for (int i = radio; i < (height + radio); i++)
     {
         for (int j = radio; j < (width + radio); j++)
@@ -164,7 +172,6 @@ Pixel** highlightedMatriz(Pixel **input, int width, int height, int radio)
     int newHeight = height + (2 * radio);
     int newWidth = width + (2 * radio);
     Pixel **output = initAuxMatriz(newHeight, newWidth);
-    int cantPixel = (2 * radio + 1) * (2 * radio + 1);
 
     #pragma omp parallel for schedule (static)
     for (int i = 0; i < newHeight; i++) {
@@ -173,7 +180,7 @@ Pixel** highlightedMatriz(Pixel **input, int width, int height, int radio)
         }
     }
 
-    #pragma omp parallel for schedule (guided)
+    #pragma omp parallel for collapse(2) schedule(guided)
     for (int i = radio; i < (height + radio); i++)
     {
         for (int j = radio; j < (width + radio); j++)
@@ -284,13 +291,13 @@ void sum(Pixel **originalMatriz, Pixel **paddingMatriz, int height, int width, i
     }
 }
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     if (argc < 4) {
         printf("Uso: %s <imagen> <radio> <nombre_salida> [num_hilos]\n", argv[0]);
         exit(1);
     }
-    int nthreads, tid;
+    int nthreads;
     char *path = argv[1];
     int radio = atoi(argv[2]);
     char *out_name = argv[3];
@@ -358,11 +365,10 @@ void main(int argc, char **argv)
         free(paddingMatriz[0]);
         free(paddingMatriz);
         
-        for (int i = 0; i < height + 2 * radio; i++) {
-            free(blurOutput[i]);
-            free(highlightOutput[i]);
-        }
-        free(blurOutput);
+        free(blurOutput[0]); 
+        free(blurOutput);    
+
+        free(highlightOutput[0]);
         free(highlightOutput);
 
         stbi_image_free(data);

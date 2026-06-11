@@ -3,10 +3,11 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <sys/time.h>
-#include "stb_image.h"
-#include "stb_image_write.h"
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+
+#include "includes/stb_image.h"
+#include "includes/stb_image_write.h"
 
 #define SATURATE(v) ((v) > 255 ? 255 : ((v) < 0 ? 0 : (v)))
 #define POSTURIZERANGES 12
@@ -71,10 +72,18 @@ Pixel **padding(Pixel **input, int height, int width, int radio){
 
 Pixel **initAuxMatriz(int height, int width){
     Pixel **aux = (Pixel **)malloc(height * sizeof(Pixel *));
-    for (int i = 0; i < height; i++)
-    {
-        aux[i] = (Pixel *)malloc(width * sizeof(Pixel));
+    if (aux == NULL) return NULL;
+
+    Pixel *pool = (Pixel *)malloc(height * width * sizeof(Pixel));
+    if (pool == NULL) {
+        free(aux);
+        return NULL;
     }
+
+    for (int i = 0; i < height; i++) {
+        aux[i] = &pool[i * width];
+    }
+
     return aux;
 }
 
@@ -160,10 +169,7 @@ Pixel** highlightedMatriz(Pixel **input, int width, int height, int radio){
     int newHeight = height + (2 * radio);
     int newWidth = width + (2 * radio);
     Pixel **output = initAuxMatriz(newHeight, newWidth);
-    int r = 0, g = 0, b = 0;
-    int cantPixel = (2 * radio + 1) * (2 * radio + 1);
     float gx, gy;
-    float magnitude;
     int umbralizeValue;
 
     for (int i = 0; i < newHeight; i++) {
@@ -178,7 +184,6 @@ Pixel** highlightedMatriz(Pixel **input, int width, int height, int radio){
         {
             gx = 0;
             gy = 0;
-            int r = 0, g = 0, b = 0;
             for (int f = -radio; f <= radio; f++)
             {
                 for (int c = -radio; c <= radio; c++)
@@ -279,7 +284,7 @@ void sum(Pixel **originalMatriz, Pixel **paddingMatriz, int height, int width, i
     }
 }
 
-void main(int argc, char **argv){
+int main(int argc, char **argv){
     if (argc < 4) {
         printf("Uso: %s <imagen> <radio> <nombre_salida>\n", argv[0]);
         exit(1);
@@ -289,7 +294,6 @@ void main(int argc, char **argv){
     char *out_name = argv[3];
     int width, height, channels;
 
-    printf("0\n");
     unsigned char *data = stbi_load(path, &width, &height, &channels, 3);
 
     if (data == NULL)
@@ -338,14 +342,14 @@ void main(int argc, char **argv){
         free(matriz);
         free(paddingMatriz[0]);
         free(paddingMatriz);
-        
-        for (int i = 0; i < height + 2 * radio; i++) {
-            free(blurOutput[i]);
-            free(highlightOutput[i]);
-        }
-        free(blurOutput);
+
+        free(blurOutput[0]); 
+        free(blurOutput);    
+
+        free(highlightOutput[0]);
         free(highlightOutput);
 
         stbi_image_free(data);
+        return 0;
     }
 }
