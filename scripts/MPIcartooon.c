@@ -9,7 +9,7 @@
 #include "includes/stb_image_write.h"
 
 #define SATURATE(v) ((v) > 255 ? 255 : ((v) < 0 ? 0 : (v)))
-#define POSTURIZERANGES 12
+#define POSTURIZERANGES 9
 
 typedef struct{
     unsigned char r;
