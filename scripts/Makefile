@@ -16,9 +16,10 @@ OBJ_DIR = obj
 EXEC_SEQ = $(OBJ_DIR)/cartoon_seq_exec
 EXEC_SHARED = $(OBJ_DIR)/cartoon_shared
 EXEC_MPI = $(OBJ_DIR)/MPIcartoon
+EXEC_HYBRID = $(OBJ_DIR)/cartoon_hybrid
 
 # Por defecto, compila todos
-all: $(EXEC_SEQ) $(EXEC_SHARED) $(EXEC_MPI)
+all: $(EXEC_SEQ) $(EXEC_SHARED) $(EXEC_MPI) $(EXEC_HYBRID)
 
 # Creación del directorio si no existe
 $(OBJ_DIR):
@@ -44,6 +45,13 @@ $(OBJ_DIR)/MPIcartooon.o: MPIcartooon.c | $(OBJ_DIR)
 
 $(EXEC_MPI): $(OBJ_DIR)/MPIcartooon.o | $(OBJ_DIR)
 	$(MPICC) $(CFLAGS) $< -o $@ $(LDFLAGS)
+
+# ---- Compilación Hibrida (MPI + OpenMP) ----
+$(OBJ_DIR)/hibrido.o: hibrido.c | $(OBJ_DIR)
+	$(MPICC) $(CFLAGS) $(OMPFLAGS) -c $< -o $@
+
+$(EXEC_HYBRID): $(OBJ_DIR)/hibrido.o | $(OBJ_DIR)
+	$(MPICC) $(CFLAGS) $(OMPFLAGS) $< -o $@ $(LDFLAGS)
 
 # Limpiar los archivos generados (.o y ejecutables)
 clean:

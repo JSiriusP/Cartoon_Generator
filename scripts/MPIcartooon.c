@@ -9,7 +9,6 @@
 #include "includes/stb_image_write.h"
 
 #define SATURATE(v) ((v) > 255 ? 255 : ((v) < 0 ? 0 : (v)))
-#define POSTURIZERANGES 9
 
 typedef struct{
     unsigned char r;
@@ -174,8 +173,8 @@ Pixel** highlightedMatriz(Pixel **input, int width, int height, int radio){
     return output;
 }
 
-void posterize(Pixel **input, int width, int height, int channels){
-    int step = 256 / POSTURIZERANGES;
+void posterize(Pixel **input, int width, int height, int channels, int posterizeRanges){
+    int step = 256 / posterizeRanges;
 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
@@ -214,7 +213,7 @@ void sum(Pixel **originalMatriz, Pixel **highlightMatriz, int height, int width)
     }
 }
 
-int main(int argc, char **argv){
+int main(int argc, char **argv){ // radio 1 o 2, posterize 3 - 9
     MPI_Init(&argc, &argv);
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -226,32 +225,49 @@ int main(int argc, char **argv){
         return 1;
     }
 
-    int width = 0, height = 0, channels = 0, radio = 0;
+    int width = 0, height = 0, channels = 0, radio = 0, posterizeRanges = 9;
     unsigned char *data = NULL;
     Pixel *pixelCast = NULL;
 
     if (rank == 0) {
-        if (argc < 4) {
-            printf("Uso: mpirun -np X %s <imagen> <radio> <nombre_salida>\n", argv[0]);
+        if (argc < 5) {
+            printf("Uso: mpirun -np X %s <imagen> <radio> <posterizeRanges> <nombre_salida>\n", argv[0]);
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
         char *path = argv[1];
         radio = atoi(argv[2]);
-        char *out_name = argv[3];
+
+        if(radio != 1 && radio != 2) {
+            printf("Radio debe ser 1 o 2.\n");
+            MPI_Finalize();
+            return 1;
+        }
+
+
         data = stbi_load(path, &width, &height, &channels, 3);
         if (data == NULL) {
             printf("Error al cargar la imagen.\n");
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
         pixelCast = (Pixel *)data;
+
+        int posterizeArg = atoi(argv[3]);
+        if(posterizeArg != 1 && posterizeArg != 2) {
+            printf("Rango del posterizado debe ser 1 o 2.\n");
+            MPI_Finalize();
+            return 1;
+        }
+        posterizeRanges = (posterizeArg == 1) ? 3 : 9;
+
     }
 
-    int metadata[4] = {width, height, channels, radio};
-    MPI_Bcast(metadata, 4, MPI_INT, 0, MPI_COMM_WORLD);
+    int metadata[5] = {width, height, channels, radio, posterizeRanges};
+    MPI_Bcast(metadata, 5, MPI_INT, 0, MPI_COMM_WORLD);
     width = metadata[0];
     height = metadata[1];
     channels = metadata[2];
     radio = metadata[3];
+    posterizeRanges = metadata[4];
 
     int numWorkers = size - 1;
     int numBH = numWorkers / 2; // Cantidad de procesos que se le asignan a Blur & Highlight
@@ -341,7 +357,7 @@ int main(int argc, char **argv){
         int bytePerFile = width * 3;
         
         char out_path[256];
-        char *out_name = argv[3];
+        char *out_name = argv[4];
         snprintf(out_path, sizeof(out_path), "files/%s%s", out_name, strstr(out_name, ".png") ? "" : ".png");
         
         int result = stbi_write_png(out_path, width, height, 3, matriz[0], bytePerFile);
@@ -401,7 +417,7 @@ int main(int argc, char **argv){
         MPI_Recv(localData, numberOfTargetRows * width * sizeof(Pixel), MPI_BYTE, 0, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         
         Pixel **matriz = initMainMatriz(localData, numberOfTargetRows, width);
-        posterize(matriz, width, numberOfTargetRows, channels);
+        posterize(matriz, width, numberOfTargetRows, channels, posterizeRanges);
         
         MPI_Send(localData, numberOfTargetRows * width * sizeof(Pixel), MPI_BYTE, 0, 2, MPI_COMM_WORLD);
         

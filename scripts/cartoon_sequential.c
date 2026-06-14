@@ -10,7 +10,6 @@
 #include "includes/stb_image_write.h"
 
 #define SATURATE(v) ((v) > 255 ? 255 : ((v) < 0 ? 0 : (v)))
-#define POSTURIZERANGES 9
 
 typedef struct{
     unsigned char r;
@@ -226,8 +225,8 @@ Pixel** highlightedMatriz(Pixel **input, int width, int height, int radio){
 * @param height   Image height in pixels.
 * @param channels Number of channels (1 = grayscale, 3 = RGB). 
 */
-void posterize(Pixel **input, int width, int height, int channels){
-    int step = 256 / POSTURIZERANGES; // tamaño de cada intervalito
+void posterize(Pixel **input, int width, int height, int channels, int posterizeRanges){
+    int step = 256 / posterizeRanges; // tamaño de cada intervalito
 
     for (int i = 0; i < height; i++)
     {
@@ -285,13 +284,23 @@ void sum(Pixel **originalMatriz, Pixel **paddingMatriz, int height, int width, i
 }
 
 int main(int argc, char **argv){
-    if (argc < 4) {
-        printf("Uso: %s <imagen> <radio> <nombre_salida>\n", argv[0]);
+    if (argc < 5) {
+        printf("Uso: %s <imagen> <radio> <posterizeRanges> <nombre_salida>\n", argv[0]);
         exit(1);
     }
     char *path = argv[1];
     int radio = atoi(argv[2]);
-    char *out_name = argv[3];
+    if (radio != 1 && radio != 2) {
+        printf("Radio debe ser 1 o 2.\n");
+        exit(1);
+    }
+    int posterizeArg = atoi(argv[3]);
+    if (posterizeArg != 1 && posterizeArg != 2) {
+        printf("Rango del posterizado debe ser 1 o 2.\n");
+        exit(1);
+    }
+    int posterizeRanges = (posterizeArg == 1) ? 3 : 9;
+    char *out_name = argv[4];
     int width, height, channels;
 
     unsigned char *data = stbi_load(path, &width, &height, &channels, 3);
@@ -316,7 +325,7 @@ int main(int argc, char **argv){
         
         Pixel **highlightOutput = highlightedMatriz(blurOutput, width, height, radio);
 
-        posterize(matriz, width, height, channels);
+        posterize(matriz, width, height, channels, posterizeRanges);
         
         sum(matriz, highlightOutput, height, width, radio);
 
