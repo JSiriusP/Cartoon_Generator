@@ -283,9 +283,9 @@ void sum(Pixel **originalMatriz, Pixel **paddingMatriz, int height, int width, i
     {
         for (int j = 0; j < width; j++)
         {
-            originalMatriz[i][j].r = (unsigned char)SATURATE(originalMatriz[i][j].r + paddingMatriz[i + radio][j + radio].r);
-            originalMatriz[i][j].g = (unsigned char)SATURATE(originalMatriz[i][j].g + paddingMatriz[i + radio][j + radio].g);
-            originalMatriz[i][j].b = (unsigned char)SATURATE(originalMatriz[i][j].b + paddingMatriz[i + radio][j + radio].b);
+            originalMatriz[i][j].r = (unsigned char)SATURATE(originalMatriz[i][j].r - paddingMatriz[i + radio][j + radio].r);
+            originalMatriz[i][j].g = (unsigned char)SATURATE(originalMatriz[i][j].g - paddingMatriz[i + radio][j + radio].g);
+            originalMatriz[i][j].b = (unsigned char)SATURATE(originalMatriz[i][j].b - paddingMatriz[i + radio][j + radio].b);
         }
     }
 }

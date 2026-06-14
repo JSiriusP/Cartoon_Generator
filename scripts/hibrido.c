@@ -213,9 +213,9 @@ void sum(Pixel **originalMatriz, Pixel **highlightMatriz, int height, int width)
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            originalMatriz[i][j].r = (unsigned char)SATURATE(originalMatriz[i][j].r + highlightMatriz[i][j].r);
-            originalMatriz[i][j].g = (unsigned char)SATURATE(originalMatriz[i][j].g + highlightMatriz[i][j].g);
-            originalMatriz[i][j].b = (unsigned char)SATURATE(originalMatriz[i][j].b + highlightMatriz[i][j].b);
+            originalMatriz[i][j].r = (unsigned char)SATURATE(originalMatriz[i][j].r - highlightMatriz[i][j].r);
+            originalMatriz[i][j].g = (unsigned char)SATURATE(originalMatriz[i][j].g - highlightMatriz[i][j].g);
+            originalMatriz[i][j].b = (unsigned char)SATURATE(originalMatriz[i][j].b - highlightMatriz[i][j].b);
         }
     }
 }
