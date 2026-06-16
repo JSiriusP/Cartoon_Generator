@@ -1,9 +1,62 @@
-\documentclass[12pt,oneside]{article}
+\documentclass[a4paper,12pt,oneside,spanish]{book}
 
-\input{estructura.tex}
-
-\title{}
+\input{estructura.tex} 
 
 \begin{document}
+
+    \frontmatter
+    
+    \begin{titlepage}
+        \begin{center}
+            
+            \begin{center}
+                \includegraphics[width=2cm]{resources/UNSL.png}\hspace{1cm}%
+                \includegraphics[width=2cm]{resources/FCFMyN.png}\hspace{1cm}
+                \includegraphics[width=2cm]{resources/Dpto Informática.png}
+            \end{center}
+            \vspace{0.8cm}
+            {\LARGE Universidad Nacional de San Luis\\[0.4cm]
+            Facultad de Ciencias Físico Matemáticas y Naturales\\[0.4cm]
+            Departamento de Informática\\[1.2cm]
+            }
+            
+            \linespread{1.2}\LARGE{
+                \textbf{\textit{Práctico Final Integrador\\Sistemas Distribuidos y Paralelos}}
+                \bigbreak%
+
+                \textit{Generación de Cartoons a partir de Imágenes}
+            }
+            \linespread{1}~\\[1.2cm]
+            
+            {\Large
+                \bigbreak%
+                Juan Cruz Paez\\
+                María Lujan Flores Medina\\
+            }
+            
+            \linespread{1}~\\[1.2cm]
+
+            {\large
+                \emph{Profesores:}\\
+                    Fabiana Piccoli\\
+                    Cesar Ochoa\\[0.5cm]
+                    
+                \emph{Ingeniería en Informática}\\
+                
+                \emph{2026}
+            }
+            \date{2026}
+        \end{center}
+    \end{titlepage}
+    
+    \pagestyle{plain}
+
+    \tableofcontents
+    \clearpage
+
+    \mainmatter%
+    
+    \input{chapters/1_introduction.tex}
+    \input{chapters/2_design.tex}
 
 \end{document}

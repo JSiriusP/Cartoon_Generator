@@ -1,0 +1,77 @@
+\chapter{Decisiones de Diseño}
+ 
+\section{Paradigmas y estrategia general}
+ 
+Para el diseño de los algoritmos paralelos se adoptaron dos paradigmas de forma
+complementaria:
+ 
+\begin{itemize}
+  \item \textbf{Paradigma de control} para las tareas de posterizado y borroneado: dado que
+        ambas operan de forma independiente sobre la imagen de entrada (sin dependencias de
+        datos entre sí), pueden ejecutarse en paralelo. Se decidió paralelizarlas asignando
+        recursos de cómputo de forma independiente a cada una.
+ 
+  \item \textbf{Paradigma de datos} para la distribución de los datos de entrada: dentro de
+        cada tarea, los datos (filas o bloques de la imagen) se reparten entre los workers
+        disponibles.
+\end{itemize}
+ 
+Dentro de la sección de borroneado, las dos subtareas (blur y highlight+umbralado) sí
+presentan dependencia secuencial entre sí, por lo que se implementa un \textbf{pipeline de
+datos}: primero se ejecuta la función de blur sobre toda la imagen y, sobre el resultado,
+se aplica la función de highlight junto con la operación de umbralado.
+ 
+\section{Algoritmo secuencial}
+ 
+En todas las versiones del algoritmo se aplicó la técnica de \textbf{padding}: se añade un
+borde auxiliar de píxeles con valor neutro (negro) alrededor de la matriz de entrada. Esto
+elimina la necesidad de verificar en cada iteración si las celdas vecinas son válidas al
+calcular el blur y el highlight, simplificando el código y mejorando la localidad de memoria.
+ 
+\section{Algoritmo con memoria compartida (OpenMP)}
+ 
+Se aplica descomposición de datos de entrada para cada tarea dentro del proceso.
+ 
+La paralelización de las tareas de borroneado y posterizado se realiza con la directiva
+ 
+\begin{verbatim}
+#pragma omp parallel sections num_threads(2)
+\end{verbatim}
+ 
+que identifica las dos secciones a ejecutar en paralelo, combinada con
+\texttt{\#pragma omp section} para cada una de ellas.
+ 
+\textbf{Suma y posterizado.} Se usa \texttt{\#pragma omp parallel for schedule(static)}.
+La planificación estática se eligió porque el costo computacional de cada iteración es
+uniforme, lo que permite dividir el espacio de trabajo de forma equitativa sin sobrecarga
+de administración dinámica.
+ 
+\textbf{Blur y highlight.} La inicialización de datos se paraleliza con
+\texttt{\#pragma omp parallel for schedule(static)}. El procesamiento principal emplea
+ 
+\begin{verbatim}
+#pragma omp parallel for collapse(2) schedule(guided)
+\end{verbatim}
+ 
+La cláusula \texttt{collapse(2)} fusiona los dos loops anidados en un único espacio de
+iteraciones. La planificación \texttt{guided} se adopta porque el trabajo por iteración puede
+ser variable o impredecible, y resulta más eficiente que \texttt{dynamic} en la administración
+del balance de carga.
+ 
+\section{Algoritmo con memoria distribuida (MPI)}
+ 
+El proceso de rango 0 actúa como \textbf{orquestador}: recibe la imagen original, la
+distribuye entre los workers y recolecta los resultados parciales. Los procesos worker se
+dividen en dos grupos según la sección asignada: la mitad procesa el posterizado y la otra
+mitad el borroneado.
+ 
+Durante el análisis experimental se observó que paralelizar la \textbf{suma final} de las
+matrices de posterizado y borroneado incrementaba el tiempo de ejecución de forma
+contraproducente. Este comportamiento se atribuye a la latencia y overhead de comunicación
+entre procesos, que supera el costo de la suma en sí misma. Por esta razón se decidió
+\textbf{no paralelizar la suma final}, dejándola a cargo del proceso orquestador.
+ 
+\section{Algoritmo híbrido (MPI + OpenMP)}
+ 
+% TODO: completar con las decisiones de diseño del algoritmo híbrido
+ 
