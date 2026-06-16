@@ -47,13 +47,13 @@ with open('../resultados_benchmark.md', 'w') as f:
             for posterize in posterizes:
                 f.write(f"### Filtro: {'3x3' if radio==1 else '5x5'}, Posterizado: {'3 rangos' if posterize==1 else '9 rangos'}\n\n")
                 
-                f.write("| Implementación | Configuración | Tiempo (s) | Speedup |\n")
-                f.write("|---|---|---|---|\n")
+                f.write("| Implementación | Configuración | Tiempo (s) | Speedup | Eficiencia |\n")
+                f.write("|---|---|---|---|---|\n")
                 
                 # Sequential
                 cmd_seq = f"./obj/cartoon_seq_exec {img_path} {radio} {posterize} out_seq"
                 t_seq = run_cmd(cmd_seq)
-                f.write(f"| Secuencial | N/A | {t_seq if t_seq else 'Error'} | 1.0 |\n")
+                f.write(f"| Secuencial | N/A | {t_seq if t_seq else 'Error'} | 1.00x | 1.00 |\n")
                 
                 if not t_seq:
                     continue
@@ -62,22 +62,28 @@ with open('../resultados_benchmark.md', 'w') as f:
                 for th in omp_threads:
                     cmd_omp = f"./obj/cartoon_shared {img_path} {radio} {posterize} out_omp {th}"
                     t_omp = run_cmd(cmd_omp)
-                    speedup = f"{t_seq/t_omp:.2f}x" if t_omp else "Error"
-                    f.write(f"| OpenMP | {th} hilos | {t_omp if t_omp else 'Error'} | {speedup} |\n")
+                    speedup_val = t_seq/t_omp if t_omp and t_seq else None
+                    speedup = f"{speedup_val:.2f}x" if speedup_val else "Error"
+                    efficiency = f"{speedup_val/th:.2f}" if speedup_val else "Error"
+                    f.write(f"| OpenMP | {th} hilos | {t_omp if t_omp else 'Error'} | {speedup} | {efficiency} |\n")
                 
                 # MPI
                 for pr in mpi_procs:
                     cmd_mpi = f"mpirun -n {pr} --oversubscribe ./obj/MPIcartoon {img_path} {radio} {posterize} out_mpi"
                     t_mpi = run_cmd(cmd_mpi)
-                    speedup = f"{t_seq/t_mpi:.2f}x" if t_mpi else "Error"
-                    f.write(f"| MPI | {pr} procesos | {t_mpi if t_mpi else 'Error'} | {speedup} |\n")
+                    speedup_val = t_seq/t_mpi if t_mpi and t_seq else None
+                    speedup = f"{speedup_val:.2f}x" if speedup_val else "Error"
+                    efficiency = f"{speedup_val/pr:.2f}" if speedup_val else "Error"
+                    f.write(f"| MPI | {pr} procesos | {t_mpi if t_mpi else 'Error'} | {speedup} | {efficiency} |\n")
                 
                 # Hybrid
                 for pr, th in hybrid_configs:
                     cmd_hyb = f"mpirun -n {pr} --oversubscribe ./obj/cartoon_hybrid {img_path} {radio} {posterize} out_hyb {th}"
                     t_hyb = run_cmd(cmd_hyb)
-                    speedup = f"{t_seq/t_hyb:.2f}x" if t_hyb else "Error"
-                    f.write(f"| Híbrido | {pr} procs x {th} hilos | {t_hyb if t_hyb else 'Error'} | {speedup} |\n")
+                    speedup_val = t_seq/t_hyb if t_hyb and t_seq else None
+                    speedup = f"{speedup_val:.2f}x" if speedup_val else "Error"
+                    efficiency = f"{speedup_val/(pr*th):.2f}" if speedup_val else "Error"
+                    f.write(f"| Híbrido | {pr} procs x {th} hilos | {t_hyb if t_hyb else 'Error'} | {speedup} | {efficiency} |\n")
                 
                 f.write("\n")
                 f.flush()
