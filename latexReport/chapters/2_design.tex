@@ -1,3 +1,5 @@
+
+
 \chapter{Decisiones de Diseño}
  
 \section{Paradigmas y estrategia general}
@@ -73,5 +75,11 @@ entre procesos, que supera el costo de la suma en sí misma. Por esta razón se 
  
 \section{Algoritmo híbrido (MPI + OpenMP)}
  
+El algoritmo híbrido fue creado:
+\begin{itemize}
+      \item MPI: Se reutilizo el código generado en el algoritmo con memoria distribuida.
+      \item OpenMP: Se agregaron a los bucles del anterior código, las directrices que se utilizaron previamente en el algoritmo con memoria compartida.
+\end{itemize}
+La suma que se realiza al final para juntar los resultados del posterizado y borroneado se decidio que se paralelizara utilizando únicamente OpenMP, como se vio en el anterior algoritmo, los tiempos aumentaban al paralelizarla con MPI pero OpenMP almenos en un entorno local resulta ser mucho más eficiente.
 % TODO: completar con las decisiones de diseño del algoritmo híbrido
  

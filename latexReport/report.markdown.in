@@ -1,0 +1,25 @@
+# Resultados del Benchmark
+
+## Imagen: 800x800
+
+### Filtro: 3x3, Posterizado: 3 rangos
+
+| Implementación | Configuración | Tiempo (s) | Speedup | Eficiencia |
+|---|---|---|---|---|
+| Secuencial | N/A | 0.430802 | 1.00x | 1.00 |
+| OpenMP | 2 hilos | 0.383252 | 1.12x | 0.56 |
+| OpenMP | 4 hilos | 0.384256 | 1.12x | 0.28 |
+| OpenMP | 8 hilos | 0.384426 | 1.12x | 0.14 |
+| OpenMP | 16 hilos | 0.406671 | 1.06x | 0.07 |
+| OpenMP | 32 hilos | 0.406234 | 1.06x | 0.03 |
+| MPI | 3 procesos | 0.408984 | 1.05x | 0.35 |
+| MPI | 8 procesos | 0.313341 | 1.37x | 0.17 |
+| MPI | 16 procesos | 0.291762 | 1.48x | 0.09 |
+| MPI | 32 procesos | 0.288532 | 1.49x | 0.05 |
+| Híbrido | 3 procs x 2 hilos | 0.298572 | 1.44x | 0.24 |
+| Híbrido | 3 procs x 4 hilos | 0.250563 | 1.72x | 0.14 |
+| Híbrido | 3 procs x 8 hilos | 0.227238 | 1.90x | 0.08 |
+| Híbrido | 4 procs x 8 hilos | 0.226574 | 1.90x | 0.06 |
+| Híbrido | 8 procs x 4 hilos | 0.237488 | 1.81x | 0.06 |
+| Híbrido | 16 procs x 2 hilos | 0.248326 | 1.73x | 0.05 |
+
