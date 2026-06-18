@@ -39,17 +39,16 @@ independientes sobre la imagen original:
 La imagen cartoon final se obtiene sumando la salida de la posterización y la de la detección
 de bordes.
  
-Dado el volumen de cómputo involucrado ---especialmente para imágenes de grandes
-dimensiones---, este trabajo explora y compara distintas \textbf{estrategias de
+Dado el volumen de cómputo involucrado, este trabajo explora y compara distintas \textbf{estrategias de
 paralelización} con el fin de reducir el tiempo de procesamiento. Se implementan cuatro
 versiones del algoritmo:
  
 \begin{itemize}
   \item \textbf{Secuencial:} implementación de referencia, sin paralelismo.
-  \item \textbf{Memoria compartida (OpenMP):} paralelismo a nivel de hilos dentro de un
-        único nodo mediante directivas de compilador.
-  \item \textbf{Memoria distribuida (MPI):} paralelismo mediante paso de mensajes entre
-        procesos, potencialmente en distintos nodos.
+  \item \textbf{Memoria compartida (OpenMP):} paralelismo a nivel de threads dentro de un
+        único nodo mediante directivas.
+  \item \textbf{Memoria distribuida (MPI):} paralelismo mediante pasaje de mensajes entre
+        procesos.
   \item \textbf{Híbrido (MPI + OpenMP):} combinación de ambos paradigmas para explotar
         simultáneamente múltiples nodos y múltiples núcleos por nodo.
 \end{itemize}

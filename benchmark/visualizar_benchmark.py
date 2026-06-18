@@ -103,11 +103,8 @@ def fig_heatmap(df: pd.DataFrame, output: str):
     df2["impl_cfg"]  = df2.apply(impl_label, axis=1)
 
     # Orden de filas: OpenMP → MPI → Híbrido
-    order_impl = (
-        df2[df2["impl"] == "OpenMP"]["impl_cfg"].unique().tolist() +
-        df2[df2["impl"] == "MPI"]["impl_cfg"].unique().tolist() +
-        df2[df2["impl"] == "Híbrido"]["impl_cfg"].unique().tolist()
-    )
+    order_impl = sorted(df2["impl_cfg"].unique().tolist(), key=sort_key_impl_cfg_str)
+    escenarios_order = sorted(df2["escenario"].unique().tolist(), key=sort_key_escenario)
     # Orden de columnas: 800 → 2000 → 5000, dentro cada uno 3x3/5x5 y 3/9 rangos
     escenarios_order = df2["escenario"].unique().tolist()
 
@@ -185,8 +182,8 @@ def fig_barras_por_tamano(df: pd.DataFrame, output: str):
         )
         # Orden: Seq → OpenMP → MPI → Híbrido
         impl_order = ["Secuencial", "OpenMP", "MPI", "Híbrido"]
-        agg["impl"] = pd.Categorical(agg["impl"], categories=impl_order, ordered=True)
-        agg = agg.sort_values(["impl", "config"])
+        agg["sort_key"] = agg.apply(sort_key_config, axis=1)
+        agg = agg.sort_values("sort_key")
         agg["etiqueta"] = agg.apply(
             lambda r: "Seq" if r["impl"] == "Secuencial" else r["config"], axis=1
         )
@@ -268,6 +265,7 @@ def recursos(impl, config):
     if impl == "Híbrido":
         return int(nums[0]) * int(nums[1]) if len(nums) >= 2 else None
     return int(nums[0]) if nums else None
+
 
 
 def fig_eficiencia(df: pd.DataFrame, output: str):
@@ -373,6 +371,62 @@ def fig_escalabilidad(df: pd.DataFrame, output: str):
     print(f"  → {output}")
 
 
+def sort_key_config(row_or_dict):
+    """Genera una clave de ordenamiento numérico para las configuraciones."""
+    impl = row_or_dict["impl"]
+    config = row_or_dict["config"]
+    if impl == "Secuencial":
+        return (0, 0, 0)
+    
+    # Extraer todos los números en la cadena
+    nums = [int(n) for n in re.findall(r"\d+", config)]
+    if not nums:
+        return (1 if impl == "OpenMP" else 2 if impl == "MPI" else 3, 0, 0)
+    
+    if impl == "OpenMP":
+        return (1, nums[0], 0) # Ordenar por nro de hilos
+    elif impl == "MPI":
+        return (2, nums[0], 0) # Ordenar por nro de procesos
+    elif impl == "Híbrido":
+        p = nums[0]
+        t = nums[1] if len(nums) > 1 else 1
+        return (3, p, t)       # Ordenar por procesos, luego hilos
+    return (4, 0, 0)
+
+def sort_key_impl_cfg_str(cfg_str):
+    """Clave de ordenamiento para cadenas 'Implementación\nConfiguración' en el heatmap."""
+    parts = cfg_str.split("\n")
+    impl = parts[0]
+    config = parts[1] if len(parts) > 1 else ""
+    
+    nums = [int(n) for n in re.findall(r"\d+", config)]
+    if not nums:
+        return (1 if impl == "OpenMP" else 2 if impl == "MPI" else 3, 0, 0)
+        
+    if impl == "OpenMP":
+        return (1, nums[0], 0)
+    elif impl == "MPI":
+        return (2, nums[0], 0)
+    elif impl == "Híbrido":
+        p = nums[0]
+        t = nums[1] if len(nums) > 1 else 1
+        return (3, p, t)
+    return (4, 0, 0)
+
+def sort_key_escenario(escenario_str):
+    """Clave para ordenar escenarios (800x800, luego 2000x2000, etc.)."""
+    parts = escenario_str.split("\n")
+    img_part = parts[0]
+    img_size = int(re.findall(r"\d+", img_part)[0]) if re.findall(r"\d+", img_part) else 0
+    
+    rest = parts[1] if len(parts) > 1 else ""
+    filter_part = rest.split("|")[0].strip() if "|" in rest else ""
+    filter_size = int(re.findall(r"\d+", filter_part)[0]) if re.findall(r"\d+", filter_part) else 0
+    
+    poster_part = rest.split("|")[1].strip() if "|" in rest and len(rest.split("|")) > 1 else ""
+    poster_ranges = int(re.findall(r"\d+", poster_part)[0]) if re.findall(r"\d+", poster_part) else 0
+    
+    return (img_size, filter_size, poster_ranges)
 # ─────────────────────────────────────────────
 # MAIN
 # ─────────────────────────────────────────────
@@ -382,14 +436,19 @@ if __name__ == "__main__":
     out_dir  = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("graficos_benchmark")
     out_dir.mkdir(exist_ok=True)
 
+    # Nombre base del archivo de entrada, sin extension
+    # Ej: "CJ-10.md" -> "CJ-10"
+    #     "RC-1.md" -> "RC-1"
+    prefijo = Path(md_path).stem
+
     print(f"Leyendo: {md_path}")
     df = parse_benchmark_md(md_path)
     print(f"  {len(df)} filas parseadas.\n")
 
     print("Generando gráficos...")
-    fig_heatmap(df,             str(out_dir / "1_heatmap_speedup.png"))
-    fig_barras_por_tamano(df,   str(out_dir / "2_barras_speedup.png"))
-    fig_eficiencia(df,          str(out_dir / "3_eficiencia.png"))
-    fig_escalabilidad(df,       str(out_dir / "4_escalabilidad.png"))
+    fig_heatmap(df,             str(out_dir / f"{prefijo}-heatmap_speedup.png"))
+    fig_barras_por_tamano(df,   str(out_dir / f"{prefijo}-barras_speedup.png"))
+    fig_eficiencia(df,          str(out_dir / f"{prefijo}-eficiencia.png"))
+    fig_escalabilidad(df,       str(out_dir / f"{prefijo}-escalabilidad.png"))
 
-    print(f"\n✓ Gráficos guardados en '{out_dir}/'")
+    print(f"\n✓ Gráficos guardados en '{out_dir}/' con prefijo '{prefijo}-'")
