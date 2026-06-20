@@ -367,11 +367,11 @@ int main(int argc, char **argv){
         
         char out_path[256];
         char *out_name = argv[4];
+        double end_time = MPI_Wtime();
         snprintf(out_path, sizeof(out_path), "files/%s%s", out_name, strstr(out_name, ".png") ? "" : ".png");
         
         int result = stbi_write_png(out_path, width, height, 3, matriz[0], bytePerFile);
 
-        double end_time = MPI_Wtime();
         if (result == 0) {
             printf("Error al guardar la imagen final.\n");
         } else {

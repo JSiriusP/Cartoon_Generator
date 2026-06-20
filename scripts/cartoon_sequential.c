@@ -332,12 +332,13 @@ int main(int argc, char **argv){
         int bytePerFile = width * 3;
         
         char out_path[256];
+        gettimeofday(&end, NULL);
         snprintf(out_path, sizeof(out_path), "files/%s%s", out_name, strstr(out_name, ".png") ? "" : ".png");
         
+        double time_taken = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1e6;
+       
         int result = stbi_write_png(out_path, width, height, 3, matriz[0], bytePerFile);
 
-        gettimeofday(&end, NULL);
-        double time_taken = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1e6;
 
         if (result == 0)
         {

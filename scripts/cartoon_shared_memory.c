@@ -354,11 +354,12 @@ int main(int argc, char **argv)
         int bytePerFile = width * 3;
         
         char out_path[256];
+        double end_time = omp_get_wtime();
         snprintf(out_path, sizeof(out_path), "files/%s%s", out_name, strstr(out_name, ".png") ? "" : ".png");
         
+        
         int result = stbi_write_png(out_path, width, height, 3, matriz[0], bytePerFile);
-
-        double end_time = omp_get_wtime();
+        
         double time_taken = end_time - start_time;
 
         if (result == 0)
