@@ -18,7 +18,7 @@ secuencial de referencia, se utilizaron las siguientes métricas estándar:
     paralelos en comparación con el algoritmo secuencial. Se define mediante la fórmula:
     \[S_p = \frac{T_1}{T_p}\]
     Donde $T_1$ es el tiempo de ejecución secuencial y $T_p$ es el tiempo de ejecución con la versión paralela 
-    utilizando $p$ unidades de recursos (threads o procesos). Un speedup ideal sería igual a $?????$ (super lineal??).
+    utilizando $p$ unidades de recursos (threads o procesos). Un speedup ideal sería uno super lineal.
     
     \item \textbf{Eficiencia Paralela ($E_p$):} Mide la fracción de tiempo durante la cual los procesadores asignados 
     son utilizados efectivamente para realizar cálculos útiles. Se define como:
@@ -98,7 +98,14 @@ La eficiencia representa qué tan efectivamente se están usando los recursos ag
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{../benchmark/graficos/RC-2-eficiencia.png}
+    \includegraphics[width=1\textwidth]{../benchmark/graficos/CJ-1-eficiencia.png}
+    \caption{Eficiencia paralela promedio en entorno local comparando OpenMP, MPI e Híbrido frente al comportamiento Ideal.}
+    \label{fig:eficiencia_cluster}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{../benchmark/graficos/RC-2-eficiencia.png}
     \caption{Eficiencia paralela promedio en Entorno cluster comparando OpenMP, MPI e Híbrido frente al comportamiento Ideal.}
     \label{fig:eficiencia_cluster}
 \end{figure}
@@ -106,6 +113,13 @@ La eficiencia representa qué tan efectivamente se están usando los recursos ag
 \subsection{Heatmap de Speedup por Escenario}
 El heatmap permite cruzar todas las ejecuciones (combinaciones de resolución, filtro y posterización en el eje X) con todas las configuraciones de 
 recursos (eje Y), mapeando el speedup absoluto en una escala de color.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{../benchmark/graficos/CJ-1-heatmap_speedup.png}
+    \caption{Heatmap de Speedup detallado por escenario y configuración en entorno local.}
+    \label{fig:heatmap_cluster}
+\end{figure}
 
 \begin{figure}[H]
     \centering
@@ -117,6 +131,13 @@ recursos (eje Y), mapeando el speedup absoluto en una escala de color.
 \subsection{Curva de Escalabilidad}
 Muestra la evolución del speedup de la mejor configuración de cada paradigma a medida que el problema crece en volumen 
 (de 800$\times$800 a 5000$\times$5000 píxeles).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../benchmark/graficos/CJ-1-escalabilidad.png}
+    \caption{Escalabilidad: Speedup promedio de la mejor configuración de cada implementación en función del tamaño de la imagen (local).}
+    \label{fig:escalabilidad_cluster}
+\end{figure}
 
 \begin{figure}[H]
     \centering

@@ -14,7 +14,9 @@
 \contentsline {subsection}{\numberline {3.4.1}Speedup Promedio por Configuración}{7}{subsection.3.4.1}%
 \contentsline {subsection}{\numberline {3.4.2}Eficiencia Paralela}{7}{subsection.3.4.2}%
 \contentsline {subsection}{\numberline {3.4.3}Heatmap de Speedup por Escenario}{8}{subsection.3.4.3}%
-\contentsline {subsection}{\numberline {3.4.4}Curva de Escalabilidad}{8}{subsection.3.4.4}%
-\contentsline {chapter}{\numberline {4}Conclusiones y Análisis de Resultados}{10}{chapter.4}%
-\contentsline {chapter}{\numberline {A}Resultados del Benchmark en Entorno Local (Compu Juan)}{11}{appendix.Alph1}%
-\contentsline {chapter}{\numberline {B}Resultados del Benchmark en Entorno Cluster (Ejecución 2)}{18}{appendix.Alph2}%
+\contentsline {subsection}{\numberline {3.4.4}Curva de Escalabilidad}{9}{subsection.3.4.4}%
+\contentsline {chapter}{\numberline {4}Conclusiones y Análisis de Resultados}{11}{chapter.4}%
+\contentsline {section}{\numberline {4.1}En el entorno local}{11}{section.4.1}%
+\contentsline {section}{\numberline {4.2}En el entorno de el cluster}{11}{section.4.2}%
+\contentsline {chapter}{\numberline {A}Resultados del Benchmark en Entorno Local (Compu Juan)}{13}{appendix.Alph1}%
+\contentsline {chapter}{\numberline {B}Resultados del Benchmark en Entorno Cluster}{20}{appendix.Alph2}%

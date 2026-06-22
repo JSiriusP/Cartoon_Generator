@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.5.13)  18 JUN 2026 20:20
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.5.13)  20 JUN 2026 18:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -670,6 +670,16 @@ LaTeX Info: Redefining \. on input line 11.
 LaTeX Info: Redefining \% on input line 11.
 Package babel Info: 'spanish' activates 'spanish' shorthands.
 (babel)             Reported on input line 11.
+
+
+LaTeX Warning: Label `fig:eficiencia_cluster' multiply defined.
+
+
+LaTeX Warning: Label `fig:heatmap_cluster' multiply defined.
+
+
+LaTeX Warning: Label `fig:escalabilidad_cluster' multiply defined.
+
 )
 \openout1 = `report.aux'.
 
@@ -758,17 +768,17 @@ Package hyperref Info: Link coloring ON on input line 5.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-<resources/UNSL.png, id=83, 57.21375pt x 65.24374pt>
+<resources/UNSL.png, id=91, 57.21375pt x 65.24374pt>
 File: resources/UNSL.png Graphic file (type png)
 <use resources/UNSL.png>
 Package pdftex.def Info: resources/UNSL.png  used on input line 13.
 (pdftex.def)             Requested size: 56.9055pt x 64.89513pt.
-<resources/FCFMyN.png, id=85, 62.2325pt x 58.2175pt>
+<resources/FCFMyN.png, id=93, 62.2325pt x 58.2175pt>
 File: resources/FCFMyN.png Graphic file (type png)
 <use resources/FCFMyN.png>
 Package pdftex.def Info: resources/FCFMyN.png  used on input line 14.
 (pdftex.def)             Requested size: 56.9055pt x 53.23561pt.
-<resources/Dpto Informática.png, id=86, 63.23625pt x 65.24374pt>
+<resources/Dpto Informática.png, id=94, 63.23625pt x 65.24374pt>
 File: resources/Dpto Informática.png Graphic file (type png)
 <use resources/Dpto Informática.png>
 Package pdftex.def Info: resources/Dpto Informática.png  used on input line 15.
@@ -843,175 +853,191 @@ Cap\'{\i }tulo 3.
 [5
 
 ] [6]
-<../benchmark/graficos/CJ-1-barras_speedup.png, id=163, 1293.1512pt x 425.9112pt>
+<../benchmark/graficos/CJ-1-barras_speedup.png, id=173, 1293.1512pt x 425.9112pt>
 File: ../benchmark/graficos/CJ-1-barras_speedup.png Graphic file (type png)
 <use ../benchmark/graficos/CJ-1-barras_speedup.png>
 Package pdftex.def Info: ../benchmark/graficos/CJ-1-barras_speedup.png  used on input line 84.
 (pdftex.def)             Requested size: 432.48051pt x 142.44229pt.
-<../benchmark/graficos/RC-2-barras_speedup.png, id=164, 1293.1512pt x 425.9112pt>
+<../benchmark/graficos/RC-2-barras_speedup.png, id=174, 1293.1512pt x 425.9112pt>
 File: ../benchmark/graficos/RC-2-barras_speedup.png Graphic file (type png)
 <use ../benchmark/graficos/RC-2-barras_speedup.png>
 Package pdftex.def Info: ../benchmark/graficos/RC-2-barras_speedup.png  used on input line 91.
 (pdftex.def)             Requested size: 432.48051pt x 142.44229pt.
-<../benchmark/graficos/RC-2-eficiencia.png, id=165, 1290.2604pt x 356.532pt>
+<../benchmark/graficos/CJ-1-eficiencia.png, id=175, 1289.7786pt x 356.532pt>
+File: ../benchmark/graficos/CJ-1-eficiencia.png Graphic file (type png)
+<use ../benchmark/graficos/CJ-1-eficiencia.png>
+Package pdftex.def Info: ../benchmark/graficos/CJ-1-eficiencia.png  used on input line 101.
+(pdftex.def)             Requested size: 455.24411pt x 125.84346pt.
+ [7 <../benchmark/graficos/CJ-1-barras_speedup.png> <../benchmark/graficos/RC-2-barras_speedup.png>]
+<../benchmark/graficos/RC-2-eficiencia.png, id=184, 1290.2604pt x 356.532pt>
 File: ../benchmark/graficos/RC-2-eficiencia.png Graphic file (type png)
 <use ../benchmark/graficos/RC-2-eficiencia.png>
-Package pdftex.def Info: ../benchmark/graficos/RC-2-eficiencia.png  used on input line 101.
-(pdftex.def)             Requested size: 432.48051pt x 119.50558pt.
- [7 <../benchmark/graficos/CJ-1-barras_speedup.png> <../benchmark/graficos/RC-2-barras_speedup.png>]
-<../benchmark/graficos/RC-2-heatmap_speedup.png, id=174, 936.1374pt x 425.4294pt>
+Package pdftex.def Info: ../benchmark/graficos/RC-2-eficiencia.png  used on input line 108.
+(pdftex.def)             Requested size: 455.24411pt x 125.7945pt.
+<../benchmark/graficos/CJ-1-heatmap_speedup.png, id=185, 936.1374pt x 425.4294pt>
+File: ../benchmark/graficos/CJ-1-heatmap_speedup.png Graphic file (type png)
+<use ../benchmark/graficos/CJ-1-heatmap_speedup.png>
+Package pdftex.def Info: ../benchmark/graficos/CJ-1-heatmap_speedup.png  used on input line 119.
+(pdftex.def)             Requested size: 432.48051pt x 196.5373pt.
+<../benchmark/graficos/RC-2-heatmap_speedup.png, id=186, 936.1374pt x 425.4294pt>
 File: ../benchmark/graficos/RC-2-heatmap_speedup.png Graphic file (type png)
 <use ../benchmark/graficos/RC-2-heatmap_speedup.png>
-Package pdftex.def Info: ../benchmark/graficos/RC-2-heatmap_speedup.png  used on input line 112.
+Package pdftex.def Info: ../benchmark/graficos/RC-2-heatmap_speedup.png  used on input line 126.
 (pdftex.def)             Requested size: 432.48051pt x 196.5373pt.
-<../benchmark/graficos/RC-2-escalabilidad.png, id=175, 638.8668pt x 351.714pt>
+ [8 <../benchmark/graficos/CJ-1-eficiencia.png> <../benchmark/graficos/RC-2-eficiencia.png> <../benchmark/graficos/CJ-1-heatmap_speedup.png>]
+<../benchmark/graficos/CJ-1-escalabilidad.png, id=197, 638.8668pt x 351.714pt>
+File: ../benchmark/graficos/CJ-1-escalabilidad.png Graphic file (type png)
+<use ../benchmark/graficos/CJ-1-escalabilidad.png>
+Package pdftex.def Info: ../benchmark/graficos/CJ-1-escalabilidad.png  used on input line 137.
+(pdftex.def)             Requested size: 364.19667pt x 200.50589pt.
+<../benchmark/graficos/RC-2-escalabilidad.png, id=198, 638.8668pt x 351.714pt>
 File: ../benchmark/graficos/RC-2-escalabilidad.png Graphic file (type png)
 <use ../benchmark/graficos/RC-2-escalabilidad.png>
-Package pdftex.def Info: ../benchmark/graficos/RC-2-escalabilidad.png  used on input line 123.
+Package pdftex.def Info: ../benchmark/graficos/RC-2-escalabilidad.png  used on input line 144.
 (pdftex.def)             Requested size: 364.19667pt x 200.50589pt.
- [8 <../benchmark/graficos/RC-2-eficiencia.png> <../benchmark/graficos/RC-2-heatmap_speedup.png>]) (./chapters/4_conclusions.tex [9 <../benchmark/graficos/RC-2-escalabilidad.png>]
+ [9 <../benchmark/graficos/RC-2-heatmap_speedup.png> <../benchmark/graficos/CJ-1-escalabilidad.png>]) (./chapters/4_conclusions.tex [10 <../benchmark/graficos/RC-2-escalabilidad.png>]
 Cap\'{\i }tulo 4.
-) (./chapters/apendices.tex [10
+[11
 
-]
+]) (./chapters/apendices.tex [12]
 Ap\'{e}ndice A.
-<resources/800local3x33.png, id=196, 1173.38374pt x 546.04pt>
+<resources/800local3x33.png, id=224, 1162.3425pt x 548.0475pt>
 File: resources/800local3x33.png Graphic file (type png)
 <use resources/800local3x33.png>
 Package pdftex.def Info: resources/800local3x33.png  used on input line 9.
-(pdftex.def)             Requested size: 455.24411pt x 211.8466pt.
-<resources/800local3x39.png, id=197, 1163.34625pt x 489.83pt>
+(pdftex.def)             Requested size: 455.24411pt x 214.64917pt.
+<resources/800local3x39.png, id=225, 1163.34625pt x 491.8375pt>
 File: resources/800local3x39.png Graphic file (type png)
 <use resources/800local3x39.png>
 Package pdftex.def Info: resources/800local3x39.png  used on input line 17.
-(pdftex.def)             Requested size: 455.24411pt x 191.68318pt.
-[11
+(pdftex.def)             Requested size: 455.24411pt x 192.46877pt.
+[13
 
  <./resources/800local3x33.png (PNG copy)>]
-<resources/800local5x53.png, id=204, 1165.35374pt x 489.83pt>
+<resources/800local5x53.png, id=231, 1161.33875pt x 491.8375pt>
 File: resources/800local5x53.png Graphic file (type png)
 <use resources/800local5x53.png>
 Package pdftex.def Info: resources/800local5x53.png  used on input line 24.
-(pdftex.def)             Requested size: 455.24411pt x 191.34685pt.
-<resources/800local5x59.png, id=205, 1164.35pt x 488.82625pt>
+(pdftex.def)             Requested size: 455.24411pt x 192.79898pt.
+<resources/800local5x59.png, id=232, 1160.335pt x 488.82625pt>
 File: resources/800local5x59.png Graphic file (type png)
 <use resources/800local5x59.png>
 Package pdftex.def Info: resources/800local5x59.png  used on input line 32.
-(pdftex.def)             Requested size: 455.24411pt x 191.11884pt.
- [12 <./resources/800local3x39.png (PNG copy)> <./resources/800local5x53.png (PNG copy)>]
-<resources/2000local3x33.png, id=212, 1159.33125pt x 542.025pt>
+(pdftex.def)             Requested size: 455.24411pt x 191.78267pt.
+ [14 <./resources/800local3x39.png (PNG copy)> <./resources/800local5x53.png (PNG copy)>]
+<resources/2000local3x33.png, id=239, 1163.34625pt x 547.04375pt>
 File: resources/2000local3x33.png Graphic file (type png)
 <use resources/2000local3x33.png>
 Package pdftex.def Info: resources/2000local3x33.png  used on input line 41.
-(pdftex.def)             Requested size: 455.24411pt x 212.83626pt.
-<resources/2000local3x39.png, id=213, 1160.335pt x 491.8375pt>
+(pdftex.def)             Requested size: 455.24411pt x 214.0724pt.
+<resources/2000local3x39.png, id=240, 1164.35pt x 492.84125pt>
 File: resources/2000local3x39.png Graphic file (type png)
 <use resources/2000local3x39.png>
 Package pdftex.def Info: resources/2000local3x39.png  used on input line 49.
-(pdftex.def)             Requested size: 455.24411pt x 192.96408pt.
- [13 <./resources/800local5x59.png (PNG copy)> <./resources/2000local3x33.png (PNG copy)>]
-<resources/2000local5x53.png, id=220, 1160.335pt x 487.8225pt>
+(pdftex.def)             Requested size: 455.24411pt x 192.6886pt.
+ [15 <./resources/800local5x59.png (PNG copy)> <./resources/2000local3x33.png (PNG copy)>]
+<resources/2000local5x53.png, id=247, 1162.3425pt x 495.8525pt>
 File: resources/2000local5x53.png Graphic file (type png)
 <use resources/2000local5x53.png>
 Package pdftex.def Info: resources/2000local5x53.png  used on input line 56.
-(pdftex.def)             Requested size: 455.24411pt x 191.38887pt.
-<resources/2000local5x59.png, id=221, 1161.33875pt x 490.83376pt>
+(pdftex.def)             Requested size: 455.24411pt x 194.20639pt.
+<resources/2000local5x59.png, id=248, 1159.33125pt x 492.84125pt>
 File: resources/2000local5x59.png Graphic file (type png)
 <use resources/2000local5x59.png>
 Package pdftex.def Info: resources/2000local5x59.png  used on input line 64.
-(pdftex.def)             Requested size: 455.24411pt x 192.40552pt.
- [14 <./resources/2000local3x39.png (PNG copy)> <./resources/2000local5x53.png (PNG copy)>]
-<resources/5000local3x33.png, id=228, 1163.34625pt x 545.03625pt>
+(pdftex.def)             Requested size: 455.24411pt x 193.52333pt.
+ [16 <./resources/2000local3x39.png (PNG copy)> <./resources/2000local5x53.png (PNG copy)>]
+<resources/5000local3x33.png, id=255, 1162.3425pt x 546.04pt>
 File: resources/5000local3x33.png Graphic file (type png)
 <use resources/5000local3x33.png>
 Package pdftex.def Info: resources/5000local3x33.png  used on input line 73.
-(pdftex.def)             Requested size: 455.24411pt x 213.28682pt.
-<resources/5000local3x39.png, id=229, 1157.32375pt x 489.83pt>
+(pdftex.def)             Requested size: 455.24411pt x 213.86292pt.
+<resources/5000local3x39.png, id=256, 1161.33875pt x 490.83376pt>
 File: resources/5000local3x39.png Graphic file (type png)
 <use resources/5000local3x39.png>
 Package pdftex.def Info: resources/5000local3x39.png  used on input line 81.
-(pdftex.def)             Requested size: 455.24411pt x 192.67725pt.
- [15 <./resources/2000local5x59.png (PNG copy)> <./resources/5000local3x33.png (PNG copy)>]
-<resources/5000local5x53.png, id=236, 1159.33125pt x 492.84125pt>
+(pdftex.def)             Requested size: 455.24411pt x 192.40552pt.
+ [17 <./resources/2000local5x59.png (PNG copy)> <./resources/5000local3x33.png (PNG copy)>]
+<resources/5000local5x53.png, id=264, 1161.33875pt x 494.84875pt>
 File: resources/5000local5x53.png Graphic file (type png)
 <use resources/5000local5x53.png>
 Package pdftex.def Info: resources/5000local5x53.png  used on input line 88.
-(pdftex.def)             Requested size: 455.24411pt x 193.52333pt.
-<resources/5000local5x59.png, id=237, 1161.33875pt x 490.83376pt>
+(pdftex.def)             Requested size: 455.24411pt x 193.97939pt.
+<resources/5000local5x59.png, id=265, 1161.33875pt x 491.8375pt>
 File: resources/5000local5x59.png Graphic file (type png)
 <use resources/5000local5x59.png>
 Package pdftex.def Info: resources/5000local5x59.png  used on input line 96.
-(pdftex.def)             Requested size: 455.24411pt x 192.40552pt.
- [16 <./resources/5000local3x39.png (PNG copy)> <./resources/5000local5x53.png (PNG copy)>] [17 <./resources/5000local5x59.png (PNG copy)>]
+(pdftex.def)             Requested size: 455.24411pt x 192.79898pt.
+ [18 <./resources/5000local3x39.png (PNG copy)> <./resources/5000local5x53.png (PNG copy)>] [19 <./resources/5000local5x59.png (PNG copy)>]
 Ap\'{e}ndice B.
-<resources/800cluster3x33.png, id=250, 1157.32375pt x 774.895pt>
+<resources/800cluster3x33.png, id=277, 1157.32375pt x 774.895pt>
 File: resources/800cluster3x33.png Graphic file (type png)
 <use resources/800cluster3x33.png>
 Package pdftex.def Info: resources/800cluster3x33.png  used on input line 111.
 (pdftex.def)             Requested size: 455.24411pt x 304.8091pt.
-<resources/800cluster3x39.png, id=251, 1160.335pt x 723.70375pt>
+<resources/800cluster3x39.png, id=278, 1160.335pt x 723.70375pt>
 File: resources/800cluster3x39.png Graphic file (type png)
 <use resources/800cluster3x39.png>
 Package pdftex.def Info: resources/800cluster3x39.png  used on input line 119.
 (pdftex.def)             Requested size: 455.24411pt x 283.93288pt.
-[18
+[20
 
  <./resources/800cluster3x33.png (PNG copy)>]
-<resources/800cluster5x53.png, id=257, 1158.3275pt x 718.685pt>
+<resources/800cluster5x53.png, id=284, 1158.3275pt x 718.685pt>
 File: resources/800cluster5x53.png Graphic file (type png)
 <use resources/800cluster5x53.png>
 Package pdftex.def Info: resources/800cluster5x53.png  used on input line 126.
 (pdftex.def)             Requested size: 455.24411pt x 282.45734pt.
-<resources/800cluster5x59.png, id=258, 1163.34625pt x 721.69624pt>
+<resources/800cluster5x59.png, id=285, 1163.34625pt x 721.69624pt>
 File: resources/800cluster5x59.png Graphic file (type png)
 <use resources/800cluster5x59.png>
 Package pdftex.def Info: resources/800cluster5x59.png  used on input line 134.
 (pdftex.def)             Requested size: 455.24411pt x 282.41846pt.
- [19 <./resources/800cluster3x39.png (PNG copy)> <./resources/800cluster5x53.png (PNG copy)>]
-<resources/2000cluster3x33.png, id=265, 1161.33875pt x 777.90625pt>
+ [21 <./resources/800cluster3x39.png (PNG copy)> <./resources/800cluster5x53.png (PNG copy)>]
+<resources/2000cluster3x33.png, id=292, 1161.33875pt x 777.90625pt>
 File: resources/2000cluster3x33.png Graphic file (type png)
 <use resources/2000cluster3x33.png>
 Package pdftex.def Info: resources/2000cluster3x33.png  used on input line 143.
 (pdftex.def)             Requested size: 455.24411pt x 304.93716pt.
-<resources/2000cluster3x39.png, id=266, 1162.3425pt x 723.70375pt>
+<resources/2000cluster3x39.png, id=293, 1162.3425pt x 723.70375pt>
 File: resources/2000cluster3x39.png Graphic file (type png)
 <use resources/2000cluster3x39.png>
 Package pdftex.def Info: resources/2000cluster3x39.png  used on input line 151.
 (pdftex.def)             Requested size: 455.24411pt x 283.44699pt.
- [20 <./resources/800cluster5x59.png (PNG copy)> <./resources/2000Cluster3x33.png (PNG copy)>]
-<resources/2000cluster5x53.png, id=273, 1162.3425pt x 721.69624pt>
+ [22 <./resources/800cluster5x59.png (PNG copy)> <./resources/2000Cluster3x33.png (PNG copy)>]
+<resources/2000cluster5x53.png, id=300, 1162.3425pt x 721.69624pt>
 File: resources/2000cluster5x53.png Graphic file (type png)
 <use resources/2000cluster5x53.png>
 Package pdftex.def Info: resources/2000cluster5x53.png  used on input line 158.
 (pdftex.def)             Requested size: 455.24411pt x 282.66074pt.
-<resources/2000cluster5x59.png, id=274, 1159.33125pt x 722.7pt>
+<resources/2000cluster5x59.png, id=301, 1159.33125pt x 722.7pt>
 File: resources/2000cluster5x59.png Graphic file (type png)
 <use resources/2000cluster5x59.png>
 Package pdftex.def Info: resources/2000cluster5x59.png  used on input line 166.
 (pdftex.def)             Requested size: 455.24411pt x 283.78168pt.
- [21 <./resources/2000Cluster3x39.png (PNG copy)> <./resources/2000Cluster5x53.png (PNG copy)>]
-<resources/5000cluster3x33.png, id=281, 1157.32375pt x 775.89874pt>
+ [23 <./resources/2000Cluster3x39.png (PNG copy)> <./resources/2000Cluster5x53.png (PNG copy)>]
+<resources/5000cluster3x33.png, id=309, 1157.32375pt x 775.89874pt>
 File: resources/5000cluster3x33.png Graphic file (type png)
 <use resources/5000cluster3x33.png>
 Package pdftex.def Info: resources/5000cluster3x33.png  used on input line 175.
 (pdftex.def)             Requested size: 455.24411pt x 305.20392pt.
-<resources/5000cluster3x39.png, id=282, 1161.33875pt x 721.69624pt>
+<resources/5000cluster3x39.png, id=310, 1161.33875pt x 721.69624pt>
 File: resources/5000cluster3x39.png Graphic file (type png)
 <use resources/5000cluster3x39.png>
 Package pdftex.def Info: resources/5000cluster3x39.png  used on input line 183.
 (pdftex.def)             Requested size: 455.24411pt x 282.903pt.
- [22 <./resources/2000Cluster5x59.png (PNG copy)> <./resources/5000cluster3x33.png (PNG copy)>]
-<resources/5000cluster5x53.png, id=289, 1166.3575pt x 726.715pt>
+ [24 <./resources/2000Cluster5x59.png (PNG copy)> <./resources/5000cluster3x33.png (PNG copy)>]
+<resources/5000cluster5x53.png, id=318, 1166.3575pt x 726.715pt>
 File: resources/5000cluster5x53.png Graphic file (type png)
 <use resources/5000cluster5x53.png>
 Package pdftex.def Info: resources/5000cluster5x53.png  used on input line 190.
 (pdftex.def)             Requested size: 455.24411pt x 283.63948pt.
-<resources/5000cluster5x59.png, id=290, 1158.3275pt x 720.6925pt>
+<resources/5000cluster5x59.png, id=319, 1158.3275pt x 720.6925pt>
 File: resources/5000cluster5x59.png Graphic file (type png)
 <use resources/5000cluster5x59.png>
 Package pdftex.def Info: resources/5000cluster5x59.png  used on input line 198.
 (pdftex.def)             Requested size: 455.24411pt x 283.24632pt.
-) [23 <./resources/5000cluster3x39.png (PNG copy)> <./resources/5000cluster5x53.png (PNG copy)>] [24 <./resources/5000cluster5x59.png (PNG copy)>] (./report.aux
+) [25 <./resources/5000cluster3x39.png (PNG copy)> <./resources/5000cluster5x53.png (PNG copy)>] [26 <./resources/5000cluster5x59.png (PNG copy)>] (./report.aux
 LaTeX Info: Redefining \. on input line 11.
 LaTeX Info: Redefining \% on input line 11.
 )
@@ -1019,22 +1045,26 @@ LaTeX Info: Redefining \% on input line 11.
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
+
+
+LaTeX Warning: There were multiply-defined labels.
+
 Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: 55181B82D16A3415687B3D61A272E941;4192.
+(rerunfilecheck)             Checksum: 6CAAC03ED67010AAE00C98B55E57D606;4471.
  ) 
 Here is how much of TeX's memory you used:
- 30536 strings out of 469453
- 603759 string characters out of 5469037
+ 30566 strings out of 469453
+ 604933 string characters out of 5469037
  1159905 words of memory out of 5000000
- 58637 multiletter control sequences out of 15000+600000
+ 58660 multiletter control sequences out of 15000+600000
  695517 words of font info for 75 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
- 103i,6n,126p,518b,542s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 103i,6n,126p,553b,542s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmbxi10.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmcsc10.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmmi12.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/lm/lmtt12.pfb>
-Output written on report.pdf (26 pages, 2702125 bytes).
+Output written on report.pdf (28 pages, 3087941 bytes).
 PDF statistics:
- 377 PDF objects out of 1000 (max. 8388607)
- 283 compressed objects within 3 object streams
- 82 named destinations out of 1000 (max. 500000)
- 325 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 406 PDF objects out of 1000 (max. 8388607)
+ 303 compressed objects within 4 object streams
+ 89 named destinations out of 1000 (max. 500000)
+ 356 words of extra memory for PDF output out of 10000 (max. 10000000)
 
