@@ -18,6 +18,8 @@ jobs:
       id: cuda-toolkit
       with:
         cuda: '12.0.0' 
+        method: 'network' 
+        use-cache: false
 
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y build-essential
