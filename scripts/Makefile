@@ -1,11 +1,14 @@
 # Compiladores
 CC = gcc
 MPICC = mpicc
+NVCC = nvcc
 
 # Flags de compilacion
 CFLAGS = -Wall -O3
 # OpenMP para memoria compartida
 OMPFLAGS = -fopenmp
+# NVCC flags
+NVCCFLAGS = -O3
 # Enlace para la biblioteca de mates
 LDFLAGS = -lm
 
@@ -17,9 +20,10 @@ EXEC_SEQ = $(OBJ_DIR)/cartoon_seq_exec
 EXEC_SHARED = $(OBJ_DIR)/cartoon_shared
 EXEC_MPI = $(OBJ_DIR)/MPIcartoon
 EXEC_HYBRID = $(OBJ_DIR)/cartoon_hybrid
+EXEC_GPU = $(OBJ_DIR)/cartoon_gpu
 
 # Por defecto, compila todos
-all: $(EXEC_SEQ) $(EXEC_SHARED) $(EXEC_MPI) $(EXEC_HYBRID)
+all: $(EXEC_SEQ) $(EXEC_SHARED) $(EXEC_MPI) $(EXEC_HYBRID) $(EXEC_GPU)
 
 # Creación del directorio si no existe
 $(OBJ_DIR):
@@ -52,6 +56,13 @@ $(OBJ_DIR)/hibrido.o: hibrido.c | $(OBJ_DIR)
 
 $(EXEC_HYBRID): $(OBJ_DIR)/hibrido.o | $(OBJ_DIR)
 	$(MPICC) $(CFLAGS) $(OMPFLAGS) $< -o $@ $(LDFLAGS)
+
+# ---- Compilación GPU (CUDA) ----
+$(OBJ_DIR)/cartoon_gpu.o: cartoon_gpu.cu | $(OBJ_DIR)
+	$(NVCC) $(NVCCFLAGS) -c $< -o $@
+
+$(EXEC_GPU): $(OBJ_DIR)/cartoon_gpu.o | $(OBJ_DIR)
+	$(NVCC) $(NVCCFLAGS) $< -o $@ $(LDFLAGS)
 
 # Limpiar los archivos generados (.o y ejecutables)
 clean:
