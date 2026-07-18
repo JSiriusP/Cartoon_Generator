@@ -1,0 +1,59 @@
+\chapter{Introducción}
+ 
+El procesamiento digital de imágenes constituye una de las áreas más demandantes en términos
+computacionales dentro de la informática moderna. Si bien las bases matemáticas de muchas de
+sus técnicas datan de siglos atrás, su aplicación práctica a escala masiva solo fue posible con
+el avance tecnológico del hardware de las últimas décadas, que permitió realizar en tiempo
+razonable la enorme cantidad de operaciones aritméticas involucradas.
+ 
+Una imagen digital puede representarse como un arreglo bidimensional de píxeles. En el modelo
+de color \textbf{RGB} (Red, Green, Blue) utilizado en este trabajo, cada píxel contiene tres
+valores enteros en el rango $[0, 255]$, uno por canal de color. Esta representación permite
+codificar hasta 16,8 millones de tonalidades distintas, superando la capacidad discriminatoria
+del ojo humano. Los casos extremos son el negro $(0,0,0)$ y el blanco $(255,255,255)$.
+ 
+El objetivo del presente trabajo es la \textbf{generación automática de imágenes tipo
+\textit{cartoon}} a partir de una imagen original en formato RGB. Esta transformación busca
+simplificar formas, resaltar contornos y reducir variaciones tonales, logrando una apariencia
+similar a la de una ilustración o dibujo animado. Para ello se aplican dos procesos
+independientes sobre la imagen original:
+ 
+\begin{itemize}
+  \item \textbf{Posterización:} reduce el rango total de niveles de color a un conjunto más
+        pequeño de valores discretos. Cada píxel pasa a adoptar el valor del nivel más cercano
+        dentro de ese rango reducido. En imágenes a color se posteriza cada canal por separado
+        y luego se suman las imágenes resultantes.
+ 
+  \item \textbf{Detección de bordes (borroneado):} pipeline de tres etapas secuencialmente
+        dependientes entre sí:
+        \begin{enumerate}
+          \item \textit{Filtrado (blur):} suaviza la imagen para eliminar ruido.
+          \item \textit{Resaltado (highlight):} amplifica las diferencias entre zonas de
+                borde y no-borde mediante aproximación de gradiente (filtros Prewitt, Sobel
+                u otros).
+          \item \textit{Umbralado:} binariza el resultado del resaltado para obtener los
+                bordes detectados.
+        \end{enumerate}
+\end{itemize}
+ 
+La imagen cartoon final se obtiene sumando la salida de la posterización y la de la detección
+de bordes.
+ 
+Dado el volumen de cómputo involucrado, este trabajo explora y compara distintas \textbf{estrategias de
+paralelización} con el fin de reducir el tiempo de procesamiento. Se implementan cuatro
+versiones del algoritmo:
+ 
+\begin{itemize}
+  \item \textbf{Secuencial:} implementación de referencia, sin paralelismo.
+  \item \textbf{Memoria compartida (OpenMP):} paralelismo a nivel de threads dentro de un
+        único nodo mediante directivas.
+  \item \textbf{Memoria distribuida (MPI):} paralelismo mediante pasaje de mensajes entre
+        procesos.
+  \item \textbf{Híbrido (MPI + OpenMP):} combinación de ambos paradigmas para explotar
+        simultáneamente múltiples nodos y múltiples núcleos por nodo.
+\end{itemize}
+ 
+El análisis de desempeño se realiza sobre imágenes de tres tamaños
+(800$\times$800, 2000$\times$2000 y 5000$\times$5000 píxeles), con filtros de convolución
+de 3$\times$3 y 5$\times$5, y posterizado configurado con 3 y 9 rangos de color. Las métricas
+utilizadas son el \textit{speedup} y la eficiencia paralela.

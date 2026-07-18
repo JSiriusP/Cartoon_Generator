@@ -1,0 +1,70 @@
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern} 
+\usepackage{caption}
+\usepackage{enumerate}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{tcolorbox}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[hashEnumerators,smartEllipses]{markdown}
+\usepackage{titlesec}
+
+\usepackage[hidelinks]{hyperref}
+\definecolor{DarkBlue}{rgb}{0.00,0.00,0.50}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,
+    urlcolor=black,
+    citecolor=DarkBlue,
+    pdftitle={Práctico Final Integrador - SDyP},
+}
+
+\definecolor{mybg}{RGB}{245,245,245}   
+\definecolor{mykeyword}{RGB}{0,0,180}  
+\definecolor{mycomment}{RGB}{0,128,0}  
+\definecolor{mystring}{RGB}{163,21,21} 
+
+\lstset{
+    language=C,
+    backgroundcolor=\color{mybg},
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{mykeyword}\bfseries,
+    commentstyle=\color{mycomment}\itshape,
+    stringstyle=\color{mystring},
+    breaklines=true,
+    showstringspaces=false,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+     rulecolor=\color{lightgray}
+}
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT MARGINS
+%----------------------------------------------------------------------------------------
+
+\usepackage{geometry} % Required for adjusting page dimensions and margins
+
+\geometry{
+	paper=a4paper, % Paper size, change to letterpaper for US letter size
+	top=2.5cm, % Top margin
+	bottom=3cm, % Bottom margin
+	left=2.5cm, % Left margin
+	right=2.5cm, % Right margin
+	headheight=14pt, % Header height
+	footskip=1.5cm, % Space from the bottom margin to the baseline of the footer
+	headsep=1.2cm, % Space from the top margin to the baseline of the header
+	%showframe, % Uncomment to show how the type block is set on the page
+}
+
+\usepackage{titlesec}
+\titleformat{\section}[block]
+  {\bfseries\Large}
+  {}
+  {0pt}
+  {} % título sin adornos
+  [\vspace{0.3ex}\titlerule]
