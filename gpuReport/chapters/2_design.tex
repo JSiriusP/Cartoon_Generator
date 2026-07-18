@@ -1,0 +1,29 @@
+
+
+\chapter{Decisiones de Diseño}
+ 
+\section{Paradigmas y estrategia general}
+ 
+Para el diseño de los algoritmos paralelos se adoptaron dos paradigmas de forma
+complementaria:
+ 
+\begin{itemize}
+  \item \textbf{Paradigma de datos} para la distribución de los datos de entrada: dentro de
+        cada tarea, los datos (filas o bloques de la imagen) se reparten entre los workers
+        disponibles.
+\end{itemize}
+ 
+Dentro de la sección de borroneado, las dos subtareas (blur y highlight+umbralado) sí
+presentan dependencia secuencial entre sí, por lo que se implementa un \textbf{pipeline de
+datos}: primero se ejecuta la función de blur sobre toda la imagen y, sobre el resultado,
+se aplica la función de highlight junto con la operación de umbralado.
+ 
+\section{Algoritmo secuencial}
+ 
+En todas las versiones del algoritmo se aplicó la técnica de \textbf{padding}: se añade un
+borde auxiliar de píxeles con valor neutro (negro) alrededor de la matriz de entrada. Esto
+elimina la necesidad de verificar en cada iteración si las celdas vecinas son válidas al
+calcular el blur y el highlight, simplificando el código y mejorando la localidad de memoria.
+ 
+\section{Algoritmo implementado en CUDA}
+
