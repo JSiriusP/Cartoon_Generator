@@ -9,8 +9,9 @@
 #endif
 
 #ifndef TILE_SIZE
-#define TILE_SIZE 16
+#define TILE_SIZE 32
 #endif
+
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -57,7 +58,7 @@ __constant__ int SOBEL_5X5_Y[5][5] = {
 
 
 template <int radio>
-__device__ void blurKernel(Pixel *input, Pixel *output, int width, int height){
+__global__ void blurKernel(Pixel *input, Pixel *output, int width, int height){
 
     __shared__ Pixel tile[(TILE_SIZE + 2 * radio) * (TILE_SIZE + 2 * radio)];
 
@@ -114,7 +115,7 @@ __device__ void blurKernel(Pixel *input, Pixel *output, int width, int height){
 }
 
 template <int radio>
-__device__ void highlightKernel(Pixel *input, Pixel *output, int width, int height){
+__global__ void highlightKernel(Pixel *input, Pixel *output, int width, int height){
 
     __shared__ Pixel tile[(TILE_SIZE + 2 * radio) * (TILE_SIZE + 2 * radio)];
 
@@ -188,6 +189,7 @@ __device__ void highlightKernel(Pixel *input, Pixel *output, int width, int heig
     }
 }
 
+
 __device__ Pixel device_posterizeSum_pixel(Pixel p, Pixel hl, int channels, int step) {
     Pixel result;
     if (channels == 1) {
@@ -210,7 +212,7 @@ __device__ Pixel device_posterizeSum_pixel(Pixel p, Pixel hl, int channels, int 
     return result;
 }
 
-__device__ void posterizeSumKernel(Pixel *input, Pixel *highlight, Pixel *output, int width, int height, int channels, int posterizeRanges){
+__global__ void posterizeSumKernel(Pixel *input, Pixel *highlight, Pixel *output, int width, int height, int channels, int posterizeRanges){
     int step = 256 / posterizeRanges;
 
     // Grilla 1D -> Reconstrucción 2D
@@ -230,19 +232,6 @@ __device__ void posterizeSumKernel(Pixel *input, Pixel *highlight, Pixel *output
 
         output[tid] = device_posterizeSum_pixel(copyInput, hl, channels, step);
     }
-}
-
-template <int radio>
-__global__ void manager(Pixel *input, Pixel *blur, Pixel *highlight, Pixel *output, int width, int height, int channels, int posterizeRanges){
-    blurKernel<radio>(input, blur, width, height);
-
-    __syncthreads();
-
-    highlightKernel<radio>(blur, highlight, width, height);
-
-    __syncthreads();
-
-    posterizeSumKernel(input, highlight, output, width, height, channels, posterizeRanges);
 }
 
 int main(int argc, char **argv){
@@ -300,10 +289,14 @@ int main(int argc, char **argv){
     dim3 gridSize(totalBlocks); // Grilla 1D
 
     if (radio == 1) {
-        manager<1><<<gridSize, blockSize>>>(d_input, d_blur, d_highlight, d_output, width, height, channels, posterizeRanges);
+        blurKernel<1><<<gridSize, blockSize>>>(d_input, d_blur, width, height);
+        highlightKernel<1><<<gridSize, blockSize>>>(d_blur, d_highlight, width, height);
     } else {
-        manager<2><<<gridSize, blockSize>>>(d_input, d_blur, d_highlight, d_output, width, height, channels, posterizeRanges);
+        blurKernel<2><<<gridSize, blockSize>>>(d_input, d_blur, width, height);
+        highlightKernel<2><<<gridSize, blockSize>>>(d_blur, d_highlight, width, height);    
     }
+
+    posterizeSumKernel<<<gridSize, blockSize>>>(d_input, d_highlight, d_output, width, height, channels, posterizeRanges);
 
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
