@@ -9,7 +9,7 @@
 #endif
 
 #ifndef TILE_SIZE
-#define TILE_SIZE 32
+#define TILE_SIZE 64
 #endif
 
 

@@ -1,29 +1,46 @@
-
-
 \chapter{Decisiones de Diseño}
- 
-\section{Paradigmas y estrategia general}
- 
-Para el diseño de los algoritmos paralelos se adoptaron dos paradigmas de forma
-complementaria:
- 
+
+\section{Arquitectura en donde se ejecutará el programa}
+
+El entorno grafico donde se ejecutará el programa es sobre una tarjeta NVIDIA GeForce GTX 1650 utiliza la arquitectura \textbf{Turing}.
+
+\subsection*{Limites de la Arquitectura}
+
+En una arquitectura de Turing los límites para una grilla de una dimensión (la cual se utilizo en el presente programa) son:
+
 \begin{itemize}
-  \item \textbf{Paradigma de datos} para la distribución de los datos de entrada: dentro de
-        cada tarea, los datos (filas o bloques de la imagen) se reparten entre los workers
-        disponibles.
+  \item \textbf{Bloques:} El máximo de threads por bloque es de 1024 threads.
+  \item \textbf{Grilla:}  El tamaño máximo de la grilla es de $2^{31} - 1$ bloques.
+  \item \textbf{Tamaño del Warp:} la GPU planifica y ejecuta las instrucciones en grupos de 32 threads.
 \end{itemize}
+
+\section{Paradigmas y estrategia general}
+
+\subsection*{Algoritmo secuencial}
  
-Dentro de la sección de borroneado, las dos subtareas (blur y highlight+umbralado) sí
-presentan dependencia secuencial entre sí, por lo que se implementa un \textbf{pipeline de
-datos}: primero se ejecuta la función de blur sobre toda la imagen y, sobre el resultado,
-se aplica la función de highlight junto con la operación de umbralado.
- 
-\section{Algoritmo secuencial}
- 
-En todas las versiones del algoritmo se aplicó la técnica de \textbf{padding}: se añade un
+En esta versión del algoritmo se aplicó la técnica de \textbf{padding}: se añade un
 borde auxiliar de píxeles con valor neutro (negro) alrededor de la matriz de entrada. Esto
 elimina la necesidad de verificar en cada iteración si las celdas vecinas son válidas al
 calcular el blur y el highlight, simplificando el código y mejorando la localidad de memoria.
  
-\section{Algoritmo implementado en CUDA}
+\subsection*{Algoritmo implementado en CUDA}
+La solución se estructuró de forma modular en tres kernels, acorde a las etapas del proceso (\texttt{blurKernel}, \texttt{highlightKernel} y \texttt{posterizeSumKernel}). A su vez, se unificaron las etapas de posterizado y suma final en un único modulo. Esto garantiza que cada fase opere sobre datos consolidados, simplificando la sincronización de bloques y la reutilización de buferes intermedios en la GPU.
 
+Para la paralelización de los filtros (Blur y Sobel) sobre la GPU utilizando CUDA, se diseñó una estrategia de \textbf{descomposición de dominio bidimensional} optimizada mediante el uso de memoria compartida (\textit{shared memory}) y una zona de \textbf{halo} (\textit{halo zone}).
+A continuación, se describen los pilares de esta estrategia:
+\begin{itemize}
+    \item \textbf{Mapeo Bidimensional sobre Grilla y Bloques 1D:} 
+    En lugar de realizar una paralelización simplista basada en filas o columnas completas (lo cual degradaría la localidad espacial y limitaría el paralelismo en imágenes grandes), la imagen se subdivide en porciones rectangulares o \textit{tiles}. 
+    A pesar de que el bloque y la grilla se configuran en una única dimensión (1D) en el código, cada bloque reconstruye su posición bidimensional correspondiente en la grilla (\texttt{blockIdx\_x} y \texttt{blockIdx\_y}) utilizando el número de bloques por fila. De manera análoga, cada thread calcula sus coordenadas bidimensionales de píxel (\texttt{tx}, \texttt{ty}) a partir de su \texttt{threadIdx.x} lineal para procesar la porción asignada a su bloque.
+    
+    \item \textbf{Estrategia de Halo (Halo Zone) para Filtros de Convolución:}
+    Dado que las operaciones de filtrado por promedio (Blur) y el detector de bordes de Sobel (Highlight) operan sobre una vecindad de píxeles delimitada por un determinado \texttt{radio} (1 o 2 píxeles), el bloque necesita acceder a píxeles fuera de su área de procesamiento asignada. Para resolver esta dependencia, se implementa una zona de \textbf{halo} periférica en el búfer de memoria compartida. Durante la carga de datos, si los \textit{threads} requieren píxeles que exceden los límites de la imagen, se aplica una condición de borde asignando un valor neutro (color negro: $\{0,0,0\}$).
+    
+    \item \textbf{Uso de Memoria Compartida (\textit{Shared Memory}) y Sincronización:}
+    Para evitar el cuello de botella en el ancho de banda por accesos redundantes a la memoria global de la GPU, se reserva un espacio de memoria compartida (\texttt{\_\_shared\_\_ Pixel tile[...]}) para almacenar el fragmento de la imagen y su halo correspondiente. 
+    Los \textit{threads} del bloque cooperan para transferir el fragmento de datos desde la memoria global a la compartida. Tras asegurar la carga completa mediante una barrera de sincronización (\texttt{\_\_syncthreads()}), los \textit{threads} ejecutan las operaciones de convolución leyendo directamente de la memoria compartida, beneficiándose de una latencia de acceso significativamente menor.
+\end{itemize}
+
+Para la paralelización de el posterizado y la suma, se decidió que la mejor solución es no utilizar la memoria shared y utilizar únicamente la global, esto debido a que el acceso a los datos en estos procedimiento es de una única vez (no se reutilizan los datos a diferencia de Blur y Highlight) lo cúal si quisieramos almacenar datos en la memoria shared se deberían hacer más accesos a los datos aparte de que se necesitaría una sincronización entre bloques, lo cual consideramos afectaría negativamente a los tiempos. Otra justificación es que el acceso a la memoria cumple con uno de los requerimientos para aprovechar al máximo la GPU, la cual es el coalesing. 
+
+Dado que el radio del filtro de convolución (radio 1 para $3\times3$ o radio 2 para $5\times5$) condiona el tamaño del halo como las iteraciones de los bucles, se implementó el kernel mediante plantillas de C++ (\texttt(template <int radio>)). Conocer el radio en tiempo de compilación permite al compilador de CUDA calcular de manera estática el tamaño de la memoria compartida.

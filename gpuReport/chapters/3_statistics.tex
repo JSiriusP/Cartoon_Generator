@@ -20,11 +20,6 @@ secuencial de referencia, se utilizaron las siguientes métricas estándar:
     Donde $T_1$ es el tiempo de ejecución secuencial y $T_p$ es el tiempo de ejecución con la versión paralela 
     utilizando $p$ unidades de recursos (threads o procesos). Un speedup ideal sería uno super lineal.
     
-    \item \textbf{Eficiencia Paralela ($E_p$):} Mide la fracción de tiempo durante la cual los procesadores asignados 
-    son utilizados efectivamente para realizar cálculos útiles. Se define como:
-    \[E_p = \frac{S_p}{p} = \frac{T_1}{p \cdot T_p}\]
-    Una eficiencia de $1.0$ ($100\%$) indica que todos los recursos asignados están trabajando a su máxima capacidad 
-    sin pérdidas por sobrecarga de sincronización, desbalanceo de carga o comunicación.
 \end{itemize}
 
 \section{Configuraciones Experimentales}
@@ -55,97 +50,37 @@ el comportamiento bajo distintas intensidades de cómputo y comunicación:
     \item \textbf{Recursos y Paradigmas Asignados:}
     \begin{itemize}
         \item \textbf{Secuencial:} Ejecución base con un solo thread/proceso ($1$ recurso).
-        \item \textbf{OpenMP (Memoria Compartida):} Evaluado con 2, 4, 8, 16 y 32 threads en el cluster (y hasta 8 threads en local).
-        \item \textbf{MPI (Memoria Distribuida):} Evaluado con 3, 8, 16 y 32 procesos en el cluster (y hasta 8 procesos en local).
-        \item \textbf{Híbrido (MPI + OpenMP):} Evaluado en combinaciones de procesos $\times$ threads: $3\times2$, $3\times4$, 
-        $3\times8$, $4\times8$, $8\times4$ y $16\times2$ en el cluster (y hasta $5\times2$ en local).
+        \item \textbf{Graphics Processing Unit (GPU):} evaluado en configuraciones de bloques con \textit{Tiles} de $8\times8$, $16\times16$, $24\times24$ y $32\times32$, correspondientes a $64$, $256$, $576$ y $1024$ threads por bloque.
     \end{itemize}
 \end{enumerate}
 
-\section{Entornos de Ejecución}
-
-Para contrastar el comportamiento del algoritmo bajo diferentes arquitecturas físicas, las pruebas se corrieron en dos entornos:
-\begin{itemize}
-    \item \textbf{Entorno Local (Prefijo CJ):} Ejecución sobre una máquina personal multiprocesador.
-    \item \textbf{Entorno de cluster (Prefijo RC):} Ejecución sobre el cluster del departamento de informática, que permite evaluar el 
-    rendimiento del paso de mensajes entre múltiples nodos de red físicos y la escalabilidad real en sistemas distribuidos.
-\end{itemize}
-
 \section{Visualizaciones de Desempeño}
 
-A continuación, se presentan los gráficos generados para representar de manera sintética el comportamiento del sistema.
+A continuación, se presentan el gráfico generado para representar de manera sintética el comportamiento del sistema.
 
-\subsection{Speedup Promedio por Configuración}
-Las siguientes figuras muestran el Speedup promedio (calculado sobre todos los filtros y posterizados) clasificado por el tamaño de la imagen. 
-Las configuraciones están ordenadas numéricamente para apreciar la progresión lógica de los recursos asignados.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.95\textwidth]{../benchmark/graficos/CJ-1-barras_speedup.png}
-    \caption{Speedup promedio por configuración en Entorno Local para imágenes de 800$\times$800, 2000$\times$2000 y 5000$\times$5000.}
-    \label{fig:barras_speedup_local}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.95\textwidth]{../benchmark/graficos/RC-2-barras_speedup.png}
-    \caption{Speedup promedio por configuración en Entorno cluster para imágenes de 800$\times$800, 2000$\times$2000 y 5000$\times$5000.}
-    \label{fig:barras_speedup_cluster}
-\end{figure}
-
-\subsection{Eficiencia Paralela}
-La eficiencia representa qué tan efectivamente se están usando los recursos agregados. El valor ideal es $1.0$.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{../benchmark/graficos/CJ-1-eficiencia.png}
-    \caption{Eficiencia paralela promedio en entorno local comparando OpenMP, MPI e Híbrido frente al comportamiento Ideal.}
-    \label{fig:eficiencia_cluster}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{../benchmark/graficos/RC-2-eficiencia.png}
-    \caption{Eficiencia paralela promedio en Entorno cluster comparando OpenMP, MPI e Híbrido frente al comportamiento Ideal.}
-    \label{fig:eficiencia_cluster}
-\end{figure}
-
-\subsection{Heatmap de Speedup por Escenario}
+\subsection*{Heatmap de Speedup por Escenario}
 El heatmap permite cruzar todas las ejecuciones (combinaciones de resolución, filtro y posterización en el eje X) con todas las configuraciones de 
 recursos (eje Y), mapeando el speedup absoluto en una escala de color.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{../benchmark/graficos/CJ-1-heatmap_speedup.png}
-    \caption{Heatmap de Speedup detallado por escenario y configuración en entorno local.}
-    \label{fig:heatmap_cluster}
+    \includegraphics[width=0.95\textwidth]{resources/benchmark_gpu-heatmap_speedup.png}
+    \caption{Heatmap de Speedup detallado por escenario y configuración.}
+    \label{fig:heatmap}
 \end{figure}
+
+\subsection*{Análisis de Escalabilidad por Tamaño de Imagen}
+La gráfica de escalabilidad permite analizar la evolución del \textit{speedup} promedio de las distintas configuraciones de GPU (según el tamaño de \textit({Tile}) y números de threads) a medida que incrementa la resulución de la imagen y la carga de cómputo asociada (desde $800\times800$ hasta $5000\times5000$ píxeles).
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{../benchmark/graficos/RC-2-heatmap_speedup.png}
-    \caption{Heatmap de Speedup detallado por escenario y configuración en el cluster.}
-    \label{fig:heatmap_cluster}
+    \includegraphics[width=0.95\textwidth]{resources/benchmark_gpu-escalabilidad.png}
+    \caption{Evolución del speedup de la GPU frente al tamaño de la imagen.}
+    \label{fig:escalabilidad}
 \end{figure}
 
-\subsection{Curva de Escalabilidad}
-Muestra la evolución del speedup de la mejor configuración de cada paradigma a medida que el problema crece en volumen 
-(de 800$\times$800 a 5000$\times$5000 píxeles).
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{../benchmark/graficos/CJ-1-escalabilidad.png}
-    \caption{Escalabilidad: Speedup promedio de la mejor configuración de cada implementación en función del tamaño de la imagen (local).}
-    \label{fig:escalabilidad_cluster}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{../benchmark/graficos/RC-2-escalabilidad.png}
-    \caption{Escalabilidad: Speedup promedio de la mejor configuración de cada implementación en función del tamaño de la imagen (cluster).}
-    \label{fig:escalabilidad_cluster}
-\end{figure}
 
 \bigbreak
 \noindent \textit{Nota: Las tablas numéricas de datos crudos obtenidas de cada ejecución se encuentran adjuntas en 
-los Anexos \ref{appendix:local} y \ref{appendix:cluster} al final de este informe.}
+los Anexos \ref{appendix:local}.}
